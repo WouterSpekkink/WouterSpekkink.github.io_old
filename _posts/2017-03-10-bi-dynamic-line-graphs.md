@@ -66,6 +66,6 @@ The Windows version of the program can be run by simply opening the application.
 A quick way to visualise the results is to use the tool to export the node list and edge list, and import these into [Gephi](http://www.gephi.org). Importing of the edge list and node list should be done from Gephi's data laboratory. The user should make sure that the order variables of the node list are imported as numeric variables (doubles are the safest option, but integers should also work in most situations). To make useful plots of the results, the user should make sure to also install the Event Graph Layout (this can be done from within the Plugins menu of Gephi). The user should then select one of the order variables as the order variable for the Event Graph Layout plugin. The *Actor* variable can be used to give nodes colours based on the actors associated with them. This allows one to more easily spot lineages in the graph. 
 
 # Dependencies
-The program was written in C++, and with the help of Qt5 libraries. Thus, Qt5 must be installed on your system if you wish to build the program yourself. Built versions of the program for Windows and for Linux are available from [my website](http://www.wouterspekkink.org). 
+The program was written in C++, and with the help of Qt5 libraries. Thus, Qt5 must be installed on your system if you wish to build the program yourself. 
 
 
