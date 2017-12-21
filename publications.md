@@ -33,4 +33,4 @@ Boons, F.A.A., **Spekkink, W.A.H.** &amp; Mouzakitis, Y. (2011). The dynamics of
 Boons, F.A.A. &amp; **Spekkink, W.A.H.** (2015). Verinnerlijking van milieuverantwoordelijkheid in de Nederlandse chemische industrie Over de complexiteit van meervoudige processen. WRR Working Paper. [Available here](https://www.wrr.nl/binaries/wrr/documenten/working-papers/2015/06/10/verinnerlijking-van-milieuverantwoordelijkheid-in-de-nederlandse-chemische-industrie-over-de-complexiteit-van-meervoudige-processen/WP005-Verinnerlijking-milieuverantwoordelijkheid.pdf).
 
 # Professional Publications
-Boons, F.A.A., **Spekkink, W.A.H. ** &amp; Stift, N. (2012). Duurzame industriële clusters: wat werkt? (in Dutch) Milieu: opinieblad van de Vereniging van Milieuprofessionals (VVM), Oktober(nr 6), 45-47.
+Boons, F.A.A., **Spekkink, W.A.H.** &amp; Stift, N. (2012). Duurzame industriële clusters: wat werkt? (in Dutch) Milieu: opinieblad van de Vereniging van Milieuprofessionals (VVM), Oktober(nr 6), 45-47.

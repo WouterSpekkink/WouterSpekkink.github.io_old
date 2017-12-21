@@ -11,7 +11,7 @@ On this page I include material related to my PhD thesis on Industrial Symbiosis
 
 [An epub version of my thesis can be downloaded here][2].
 
-Annex 3 to 7 of the PhD thesis available separately. 
+Annex 3 to 7 of the PhD thesis available separately. \\
 They be downloaded here: [Annex 3 to 7_PhD thesis_Wouter Spekkink][3].
 
 [1]:{{ site.url}}/assets/documents/w.spekkink.pdf
