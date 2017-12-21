@@ -8,24 +8,32 @@ categories: Software
 # Introduction
 This program is based on an idea first proposed in an article by Chiara Broccatelli, Martin Everett, and Johan Koskinen, entitled *Temporal dynamics in covert networks* and published in 2016 in the journal *Methodological Innovations* (vol 9, pp. 1-14). The program was written by Wouter Spekkink. All mistakes that might exist in the program are his. 
 
+
+# Downloads
+You can download the program using the following links:
+
+   * [Download for Linux](https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/1.0.0/BDLG_Matrix_Converter_Linux.tar.gz)
+  
+   * [Download for Windows](https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/1.0.0/BDLG_Matrix_Converter_win.zip)
+
 # Bi-dynamic line graphs
 In their article, Brocatelli et al. (2016) introduce bi-dynamic line-graph (BDLG) projections of social processes to study dynamics in social networks. The BDLG can be understood as a special projection of a two-mode network of actors and events. In matrix form, a two-mode network is usually presented as an incidence matrix with actors in rows, and events in columns, like so (example based on article mentioned above):
 
-| |1|2|3|4|5|
+|   | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|
-|A|1|1|1|0|0|
-|B|0|1|1|1|0|
-|C|0|1|0|1|1|
-|D|0|0|0|0|1|
+| A | 1 | 1 | 1 | 0 | 0 |
+| B | 0 | 1 | 1 | 1 | 0 |
+| C | 0 | 1 | 0 | 1 | 1 |
+| D | 0 | 0 | 0 | 0 | 1 |
 
 In Social Network Analysis, it is common to convert two-mode networks to one-mode networks that indicate which actors participated in the same events (and how many times they participated in events together). This is done by multiplying the incidence matrix to a weighted adjacency matrix, which can be achieved by converting the incidence matrix with a transposed version of itself. If we would do that for the incidence matrix above, we would get the following adjacency matrix:
 
-| |A|B|C|D|
+|   | A | B | C | D |
 |---|---|---|---|---|
-|A|3|2|1|0|
-|B|2|3|2|0|
-|C|1|2|3|1|
-|D|0|0|1|1|
+| A | 3 | 2 | 1 | 0 |
+| B | 2 | 3 | 2 | 0 |
+| C | 1 | 2 | 3 | 1 |
+| D | 0 | 0 | 1 | 1 |
 
 Although this gives insight in the ties that emerge from the events in which actors participate, the drawback is that all temporal information is lost; only a static network remains. This can be solved partially by making separate adjacency matrices for different segments of the incidence matrix, but the choice for the size of the segments is always arbitrary, and information about changes within each segment is still lost (see Brocatelli et al. 2016 for a discussion on this).
 

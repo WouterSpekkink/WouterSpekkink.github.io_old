@@ -2,6 +2,7 @@
 layout: page
 title: Phd Thesis
 permalink: /PhD_Thesis/
+order: 3
 ---
 # My PhD thesis
 On this page I include material related to my PhD thesis on Industrial Symbiosis as a Social Process. I defended my thesis during a public defence that took place at the Erasmus University Rotterdam on February 4th, 2016.

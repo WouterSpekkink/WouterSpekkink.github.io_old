@@ -2,6 +2,7 @@
 layout: page
 title: Publications
 permalink: /publications/
+order: 2
 ---
 # Academic Publications
 Sun, L., **Spekkink, W.A.H.**, Cuppen, E. &amp; Korevaar, G. (2017). Coordination of Industrial Symbiosis through Anchoring. *Sustainability* 9(4), 549. [Open access version available here](http://www.mdpi.com/2071-1050/9/4/549/htm).
