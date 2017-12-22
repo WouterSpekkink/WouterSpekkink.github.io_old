@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "A better csv parser"
-date:   2017-10-21 09:07:00 +0000
+date:   2017-12-21 09:07:00 +0000
 categories: SoPra, Software (technical)
 ---
 
