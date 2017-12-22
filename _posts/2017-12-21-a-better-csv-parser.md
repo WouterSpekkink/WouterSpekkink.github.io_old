@@ -200,7 +200,7 @@ void MainWindow::importFromCsv() {
 {% endhighlight %}
 </details> <br>
 
-## Handdling embedded line breaks
+## Handling embedded line breaks
 
 So, what exactly happens here? Well, I won't discuss all the lines of code in detail, but I will discuss the ones most important to the problem at hand (parsing 'messy' csv-files). The basic logic of the function is that we read a csv file line by line, and that we process each line in turn. One challenge that we might encounter while parsing 'messy' csv files is the presence of embedded line breaks. This means that one cell includes multiple lines of data, separated by so-called line breaks. See the screenshot below for an example. In the second row of data (below the header), we see a couple of line breaks. 
 
