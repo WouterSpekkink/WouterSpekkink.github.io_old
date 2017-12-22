@@ -34,7 +34,7 @@ h1, h2, h3, h4, h5, h6,
 p, blockquote, pre,
 ul, ol, dl, figure,
 %vertical-rhythm {
-  margin-bottom: $spacing-unit / 2;
+  margin-bottom: $spacing-unit / 1;
 }
 
 
@@ -45,6 +45,7 @@ ul, ol, dl, figure,
 img {
   max-width: 100%;
   vertical-align: middle;
+  horizontal-align: middle;
 }
 
 
@@ -163,8 +164,8 @@ pre {
  * Wrapper
  */
 .wrapper {
-  max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit} * 2));
-  max-width:         calc(#{$content-width} - (#{$spacing-unit} * 2));
+  max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit} * 1));
+  max-width:         calc(#{$content-width} - (#{$spacing-unit} * 1));
   margin-right: auto;
   margin-left: auto;
   padding-right: $spacing-unit;

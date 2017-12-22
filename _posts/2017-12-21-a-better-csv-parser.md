@@ -8,11 +8,12 @@ categories: SoPra, Software (technical)
 # Background
 Before I get to the main topic of this post, I should offer a bit of background. I am currently working on an integrated software package for the qualitative study of social processes, called SoPrA (an acronym for **So**cial **Pr**ocess **A**nalysis). The program can be used for data entry, data management, hierarchical coding for attributes (think CAQDAS-style coding), coding for network relationships, coding for linkages between events (see the work of [David Heise][1] for a main source of inspiration in this), abstracting larger events from smaller ones, visualising event graphs, visualising event hierarchies, visualising network graphs, visualising occurrence graphs (similar to [Bi-Dynamic Line Graphs][2]), and basic analysis. I intend to write some technical as well as non-technical posts about SoPrA and its development. The technical posts will deal primarily with what happens on 'the back stage' of the program, that is, discuss the underlying source code. The non-technical posts will focus primarily on SoPrA's 'front stage', discussing its features and how to use them. This post is going to be a technical one. 
 
-<br><br>![The Welcome Screen of SoPrA](/assets/posts/SoPrA/welcome_dialog.png)<br><br>
+<br><br>![The Welcome Screen of SoPrA](/assets/posts/SoPrA/welcome_dialog.png){: .center-image}<br><br>
 
 The main reason for writing the more technical posts is that I have made heavy use of information and advice on writing code that I found online. In fact, I learned almost everything I know about coding from people willing to share their knowledge via the Web (of course, a lot of it was simply learning by doing). Occasionally, I run into difficult problems that I am only able to solve after seeing various posts on websites like Stack Overflow. That being said, the solutions I finally come up with are typically a variant of a particular suggestion that was made online, or a combination of various suggestions. I thought it was a nice idea to give something back, by discussing some solutions for ~~problems~~ challenges I encountered while writing the code for SoPrA, and making those discussion available online, in the hope that someone in search for answers to similar problems might one day stumble upon my posts. 
 
-<br><br>![Help me Stack Overflow!](https://pbs.twimg.com/media/B1xRpb-CcAAlIPs.png). <br><br>
+<br><br>![Help me Stack Overflow!](https://pbs.twimg.com/media/B1xRpb-CcAAlIPs.png){: .center-image} <br><br>
+
 
 # What's the problem?
 In this post I will discuss something related to the *Data Widget* that I wrote for SoPrA. I divided SoPrA into several widgets that perform the main tasks of the program (the tasks listed in the background discussion above). The Data Widget handles the user's interaction with data. In this case, the data take the form of chronologically ordered *incidents*, which are bracketed, qualitative descriptions of activities. The concept of incidents was introduced during the [Minnesota Innovation Research Program][3], although I work with a slightly different idea of what information should be included in an incident:
@@ -25,7 +26,7 @@ In this post I will discuss something related to the *Data Widget* that I wrote 
 	
 The Data Widget allows the analyst to create incidents, and store them in a table. To enter / edit data, the user can use a popup dialog. After saving a new incident, a row is added to the Data Widget table, after which the user can still change the location of the incident (i.e., change its position in the chronological order of all incidents), edit its details, duplicate it, or remove it. All changes are immediately written to an sqlite database. See a screenshot of the Data Widget table below.
 	
-<br><br>![The data widget view](/assets/posts/SoPrA/data_widget.png)<br><br>
+<br><br>![The data widget view](/assets/posts/SoPrA/data_widget.png){: .center-image}<br><br>
 
 One thing that the user can also do is to import an existing data set that was stored in [csv format][4]. I implemented this future because I have been building data sets before I started using SoPrA myself (I am already using the program while I am building it, which is also a good way to test it). I wanted to have the option to import these existing data sets. The most obvious way to do this (to me, at least) is to store the data sets in csv files, and then import them into SoPrA. **And here is where we finally get to the main topic of this post:** I needed a good way to parse csv files submitted by the user. This in itself is a somewhat trivial task. However, the csv files that I created in the past are a bit 'messy', primarily due to the fact that I typically included text from sources of 'raw data', such as written news items, and other types of documents. I typically just copy and paste this data, and in a csv file this will often lead to the inclusion of embedded line breaks, and embedded double quotes (e.g., when someone is quoted in a news item). 
 
@@ -204,7 +205,7 @@ void MainWindow::importFromCsv() {
 
 So, what exactly happens here? Well, I won't discuss all the lines of code in detail, but I will discuss the ones most important to the problem at hand (parsing 'messy' csv-files). The basic logic of the function is that we read a csv file line by line, and that we process each line in turn. One challenge that we might encounter while parsing 'messy' csv files is the presence of embedded line breaks. This means that one cell includes multiple lines of data, separated by so-called line breaks. See the screenshot below for an example. In the second row of data (below the header), we see a couple of line breaks. 
 
-<br><br>![Embedded line breaks](/assets/posts/a-better-csv-parser/embedded_line_breaks.png)<br><br>
+<br><br>![Embedded line breaks](/assets/posts/a-better-csv-parser/embedded_line_breaks.png){: .center-image}<br><br>
 
 The line breaks are even more obvious if we open our csv file with a basic text editor. We will see something this:
 
