@@ -2,12 +2,12 @@
 layout: default
 ---
 
-<div class="home">
 
+<div class="home">
   {{ content }}
 
   <h1 class="page-heading">Blog posts</h1>
-  
+				       
   <ul class="post-list">
     {% for post in site.posts %}
       <li>
@@ -18,11 +18,56 @@ layout: default
           <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
         </h2>
       </li>
-    {% endfor %}
+      {% endfor %}
   </ul>
-
+  <div class="border-line">
+  </div>
+  
+  <h1 class="page-heading">Filter Posts</h1>
+  
+  <div class="home-col-wrapper">
+    <div class="home-col home-col-1">
+      <h2 class="list-heading">Tags</h2>
+      <ul class="blog-tags-list">
+	{% assign sorted_tags = site.tags | sort %}
+	{% for tag in sorted_tags %}
+	{% assign t = tag | first %}
+	{% assign posts = tag | last %}
+	<li class="blog-tag-item" id="{{ t }}-item">
+	  <a href onclick="filter('{{ t }}'); return false;">{{ t }}</a>
+	</li>
+	{% endfor %}
+      </ul>
+    </div>
+    <div class="home-col home-col-2">
+      <h2 class="list-heading">Filtered posts</h2>
+      {% for tag in site.tags %}
+      {% assign t = tag | first %}
+      {% assign posts = tag | last %}
+      <div class="blog-list-container hidden" id="{{ t }}-container">
+	<script src="{{ base.url}} /assets/javascripts/home.js" type="text/javascript"></script>
+	<ul class="blog-list">
+	  {% for post in posts %}
+          {% if post.tags contains t %}
+          <li>
+            <span class="blog-item-date">{{ post.date | date: "%d %b %Y" }}</span>
+            <a href="{{ post.url }}">{{ post.title }}</a>
+          </li>
+          {% endif %}
+	  {% endfor %}
+	</ul>
+	{% assign numPosts = posts | size %}
+	{% if numPosts == 1 %}
+	<p>{{ posts | size }} post containing tag <b>{{ t }}</b></p>
+	{% else %}
+	<p>{{ posts | size }} posts containing tag <b>{{ t }}</b></p>
+	{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
   <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
-</div>
+</div> 
 
 
 
