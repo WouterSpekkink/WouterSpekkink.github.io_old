@@ -51,7 +51,7 @@ layout: default
     All comments are held for moderation; basic HTML formatting accepted.
   </p>
   <form id="commentform" method="POST" action="{{site.url}}/assets/commentsubmit.php">
-    <input type="hidden" name="post_id" value="{{page.id}}" />
+    <input type="hidden" name="post_id" value="{{post.id}}" />
     <input type="hidden" name="return_url" value="{{ site.url}}{{page.url}}" />
     <table>
       <tr>
