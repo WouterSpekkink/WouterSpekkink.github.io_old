@@ -24,24 +24,20 @@ layout: default
 
 
 <div id="comments">
-  <div class="js-comments">
+  <div class="comments-group">
     {% assign comments = site.data.comments | sort %}
     
-    {% for comments in comments reversed %}
-    {% assign commentData = comment[1] %}
+    {% for comment in comments %}
 
-    <article class="comment mdl-card mdl-shadow--2dp">
-      <div class="mdl-card__title">
-	<h2 class="mdl-card__title-text">{{ commentData.name }}</h2>
-      </div>
-      <div class="mdl-card__supporting-text">
-	  {{ commentData.description | markdownify }}
-	</div>
-      </div>
-      <div class="mdl-card__actions mdl-card--border">
-      </div>
-    </article>
+    {% if commen.id == page.id %}
+    <label>"{{ comment.name }}"</label>
+    {% if comment.url %}
+    <label>"{{ comment.url }}"</label>
+    {% endif %}
+    <label>"{{ comment.comment }}"</label>
+    {% endif %}
     {% endfor %}
+  </div>
 </div>
 
 
