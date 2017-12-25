@@ -21,6 +21,23 @@ layout: default
   </div>
 
 </article>
+  <ul class="comments-list">
+    {% for comment in site.comments %}
+    {% if comment.id == site.id %}
+    <table>
+      <tr>
+	<th>Name:</th>
+	<td><label>{{comment.date}}</label></td>
+	<td><label>{{comment.name}}</label></td>
+	<td><label>{{comment.url}}</label></td>
+	<td><label>{{comment.comment}}</label></td>
+      </tr>
+    </table>
+    {% endif %}
+    {% endfor %}
+  </ul>
+  <div class="border-line">
+  </div>
 
 
 
