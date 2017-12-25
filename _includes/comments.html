@@ -1,10 +1,7 @@
 <div class="js-comments">
+  <h1 class="comments-title">Comments</h1>
   {% assign comments = site.data.comments | sort %}
-  <h1>Comments</h1>
-  
-  
   {% for comment in comments reversed %}
-  {% assign commentData = comment[1] %}
   {% if commentData.id == page.id %}
   <article class="comment mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
@@ -22,3 +19,37 @@
   {% endif %}
   {% endfor %}
 </div>
+
+<h2>Post a comment</h2>
+<p style="font-style: italic">
+  All comments are held for moderation.
+</p>
+<form method="POST" action="https://api.staticman.net/v2/entry/WouterSpekkink/WouterSpekkink.github.io/master/_comments">
+  <input name="options[redirect]" type="hidden" value="https://WouterSpekkink.github.io/">
+  <!--    <input name="options[slug]" type="hidden" value="{{page.slug}}">-->
+  <input name="fields[id]" type="hidden" value="{{page.id}}"/>
+  
+  <table>
+    <tr>
+      <th>Name:</th>
+      <td><input name="fields[name]" type="text" size="25"</td>
+		 </tr>
+    <tr>
+      <th>E-mail:</th>
+      <td><input name="fields[email]" type="email" size="25"></td>
+    </tr>
+    <tr>
+      <th>Website:</th>
+      <td><input name="fields[url]" type="url" size="25"></td>
+    </tr>
+    <tr>
+      <th>Comment:</th>
+      <td><textarea name="fields[comment]" type="text" rows="10" cols="50"></textarea></td>
+    </tr>
+    <tr align="center">
+      <td colspan="2"><input type="submit" name="submit" value="Submit Comment"></td>
+    </tr>
+  </table>
+</form>
+</div>
+

@@ -368,10 +368,16 @@
     padding-top: 0;
 }
 
+.comments-title {
+    border-top: 1px solid black;
+}
+
 .comment {
     width: 100%;
     margin: 20px auto;
     min-height: 0;
+    border-bottom: 1px solid $grey-color-light;
+    border-top: 1px solid $grey-color-light;
 }
 
 .comment__description {
