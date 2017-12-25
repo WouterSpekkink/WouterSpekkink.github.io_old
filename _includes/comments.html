@@ -11,7 +11,7 @@
     <div class="mdl-card__supporting-text">
       <p><strong>Date: </strong>{{ commentData.date | date: "%Y-%m-%d %H:%M"}}</p>
       <div class="comment__description">
-	{{ commentData.comment | markdownify }}
+	{{ commentData.message | markdownify }}
       </div>
     </div>
     <div class="mdl-card__actions mdl-card--border">
