@@ -23,3 +23,35 @@ layout: default
 </article>
 
 
+<div id="comments">
+  <h1>Post a comment</h1>
+  <p style="font-style: italic">
+    All comments are held for moderation; basic HTML formatting accepted.
+  </p>
+  <form id="commentform" method="POST" action="https://api.staticman.net/v2/entry/WouterSpekkink/WouterSpekkink.github.io/master/comments}">
+      <input name="options[redirect]" type="hidden" value="https://WouterSpekkink.github.io">
+      <input name="options[slug]" type="hidden" value="{{ page.slug }}">
+    <table>
+      <tr>
+	<th>Name:</th>
+	<td><input name="fields[name]" type="text" size="25"</td>
+      </tr>
+      <tr>
+	<th>E-mail:</th>
+	<td><input name="fields[email]" type="email" size="25"></td>
+      </tr>
+      <tr>
+	<th>Website:</th>
+	<td><input name="fields[url]" type="url" size="25"></td>
+      </tr>
+      <tr>
+	<th>Comment:</th>
+	<td><textarea name="fields[message]" type="message" rows="10" cols="50"></textarea></td>
+      </tr>
+      <tr align="center">
+	<td colspan="2"><input type="submit" name="submit" value="Submit Comment"></td>
+      </tr>
+    </table>
+  </form>
+</div>
+
