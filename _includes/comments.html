@@ -2,6 +2,7 @@
   <h1 class="comments-title">Comments</h1>
   {% assign comments = site.data.comments | sort %}
   {% for comment in comments reversed %}
+  {% assign commentData = comment[1] %}
   {% if commentData.id == page.id %}
   <article class="comment mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
