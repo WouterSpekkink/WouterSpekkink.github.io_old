@@ -6,13 +6,15 @@
   {% if commentData.id == page.id %}
   <article class="comment mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
+      {% if commentData.url %}
+      <h2 class="mdl-card__title-text"><a href="{{commentData.url}}">{{ commentData.name }}</a></h2>
+      {% else %}
       <h2 class="mdl-card__title-text">{{ commentData.name }}</h2>
+      {% endif %}
     </div>
     <div class="mdl-card__supporting-text">
       <p><strong>Date: </strong>{{ commentData.date | date: "%Y-%m-%d %H:%M"}}</p>
-      <div class="comment__description">
-	{{ commentData.message | markdownify }}
-      </div>
+      <div class="comment__description">{{ commentData.message | markdownify }}</div>
     </div>
     <div class="mdl-card__actions mdl-card--border">
     </div>
