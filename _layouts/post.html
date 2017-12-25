@@ -23,29 +23,12 @@ layout: default
 </article>
 
 
-<div id="comments">
-  <div class="comments-group">
-    {% assign comments = site.data.comments | sort %}
-    
-    {% for comment in comments %}
-
-    {% if commen.id == page.id %}
-    <label>"{{ comment.name }}"</label>
-    {% if comment.url %}
-    <label>"{{ comment.url }}"</label>
-    {% endif %}
-    <label>"{{ comment.comment }}"</label>
-    {% endif %}
-    {% endfor %}
-  </div>
-</div>
-
 
   <h1>Post a comment</h1>
   <p style="font-style: italic">
     All comments are held for moderation.
   </p>
-  <form method="POST" action="https://api.staticman.net/v2/entry/WouterSpekkink/WouterSpekkink.github.io/master/_data/comments">
+  <form method="POST" action="https://api.staticman.net/v2/entry/WouterSpekkink/WouterSpekkink.github.io/master/comments">
     <input name="options[redirect]" type="hidden" value="https://WouterSpekkink.github.io/">
 <!--    <input name="options[slug]" type="hidden" value="{{page.slug}}">-->
     <input name="fields[id]" type="hidden" value="{{page.id}}"/>
