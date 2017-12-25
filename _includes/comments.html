@@ -1,0 +1,24 @@
+<div class="js-comments">
+  {% assign comments = site.data.comments | sort %}
+  <h1>Comments</h1>
+  
+  
+  {% for comment in comments reversed %}
+  {% assign commentData = comment[1] %}
+  {% if commentData.id == page.id %}
+  <article class="comment mdl-card mdl-shadow--2dp">
+    <div class="mdl-card__title">
+      <h2 class="mdl-card__title-text">{{ commentData.name }}</h2>
+    </div>
+    <div class="mdl-card__supporting-text">
+      <p><strong>Date: </strong>{{ commentData.date | date: "%Y-%m-%d %H:%M"}}</p>
+      <div class="comment__description">
+	{{ commentData.comment | markdownify }}
+      </div>
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+    </div>
+  </article>
+  {% endif %}
+  {% endfor %}
+</div>
