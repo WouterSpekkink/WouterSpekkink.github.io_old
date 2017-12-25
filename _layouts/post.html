@@ -24,31 +24,27 @@ layout: default
 
 
 <div id="comments">
-  {% case page.comment_count %}
-  {% when 0 %}
-  {% when 1 %}
-  <h1>1 Comment</h1>
-  {% else %}
-  <h1>{{page.comment_count}} Comments</h1>
-  {% endcase %}
-  {% for c in page.comments %}
-  <div class="comment {% cycle 'odd', 'even' %}">
-    <p class="comment_header">
-      From: {% if c.url and c.url != '' %}
-      <a href="{{c.url}}">{{c.name}}</a>
-      {% else %}
-      {{c.name}}
-      {% endif %}
-      <br />
-      <span class="comment_date">{{c.date}}</span>
-    </p>
-    <p>
-      {{c.comment | newline_to_br}}
-    </p>
-  </div>
-  {% endfor %}
-  
-  
+  <div class="js-comments">
+    {% assign comments = site.comments | sort %}
+    
+    {% for comments in comments reversed %}
+    {% assign commentData = comment[1] %}
+
+    <article class="comment mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+	<h2 class="mdl-card__title-text">{{ commentData.name }}</h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+	  {{ commentData.description | markdownify }}
+	</div>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+      </div>
+    </article>
+    {% endfor %}
+</div>
+
+
   <h1>Post a comment</h1>
   <p style="font-style: italic">
     All comments are held for moderation.
