@@ -25,7 +25,7 @@ layout: default
 
 <div id="comments">
   <div class="js-comments">
-    {% assign comments = site.comments | sort %}
+    {% assign comments = site.data.comments | sort %}
     
     {% for comments in comments reversed %}
     {% assign commentData = comment[1] %}
@@ -49,7 +49,7 @@ layout: default
   <p style="font-style: italic">
     All comments are held for moderation.
   </p>
-  <form method="POST" action="https://api.staticman.net/v2/entry/WouterSpekkink/WouterSpekkink.github.io/master/comments">
+  <form method="POST" action="https://api.staticman.net/v2/entry/WouterSpekkink/WouterSpekkink.github.io/master/_data/comments">
     <input name="options[redirect]" type="hidden" value="https://WouterSpekkink.github.io/">
 <!--    <input name="options[slug]" type="hidden" value="{{page.slug}}">-->
     <input name="fields[id]" type="hidden" value="{{page.id}}"/>
