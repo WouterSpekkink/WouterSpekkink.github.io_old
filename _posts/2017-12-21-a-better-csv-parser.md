@@ -1,10 +1,9 @@
 ---
 layout: post
-id: bettercsv-post
 title:  "A better csv parser"
 date:   2017-12-21 09:07:00 +0000
 categories: Software Sopra Technical
-tags: Software Sopra Technical
+tags: Software SoPrA Technical
 
 ---
 
@@ -29,7 +28,7 @@ In this post I will discuss something related to the *Data Widget* that I wrote 
 	
 The Data Widget allows the analyst to create incidents, and store them in a table. To enter / edit data, the user can use a popup dialog. After saving a new incident, a row is added to the Data Widget table, after which the user can still change the location of the incident (i.e., change its position in the chronological order of all incidents), edit its details, duplicate it, or remove it. All changes are immediately written to an sqlite database. See a screenshot of the Data Widget table below.
 	
-<br><br>![The data widget view](/assets/posts/SoPrA/data_widget.png){: .center-image}<br><br>
+<br><br>[![The data widget view](/assets/posts/SoPrA/data_widget.png){: .center-image}](/assets/posts/SoPrA/data_widget.png)<br><br>
 
 One thing that the user can also do is to import an existing data set that was stored in [csv format][4]. I implemented this future because I have been building data sets before I started using SoPrA myself (I am already using the program while I am building it, which is also a good way to test it). I wanted to have the option to import these existing data sets. The most obvious way to do this (to me, at least) is to store the data sets in csv files, and then import them into SoPrA. **And here is where we finally get to the main topic of this post:** I needed a good way to parse csv files submitted by the user. This in itself is a somewhat trivial task. However, the csv files that I created in the past are a bit 'messy', primarily due to the fact that I typically included text from sources of 'raw data', such as written news items, and other types of documents. I typically just copy and paste this data, and in a csv file this will often lead to the inclusion of embedded line breaks, and embedded double quotes (e.g., when someone is quoted in a news item). 
 
