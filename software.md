@@ -20,6 +20,8 @@ On this page, I either share direct links to the downloads attached to my Github
  * [Bi-Dynamic Line Graphs](#bi-dynamic-line-graphs)
  * [Multidimensional Scaling in Gephi](#multi-dimensional-scaling-in-gephi)
  * [Lineage plugin for Gephi](#lineage-plugin-for-gephi)
+ * [Dynamic Networks companion to Gephi](#dynamic-networks)
+ * [Csv parser companion to Gephi](#csv-parser-for-gephi)
  * [Scripts for R](#scripts-for-r)
  
 ## A note on Q-SoPrA
