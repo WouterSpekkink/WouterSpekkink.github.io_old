@@ -3,11 +3,11 @@ layout: post
 title:  "A better csv parser"
 date:   2017-12-21 09:07:00 +0000
 categories: Software Sopra Technical
-tags: Software Q-SoPrA Technical
+tags: Software Q-SoPrA Technical C++ Qt
 
 ---
 
-# Background
+## Background
 Before I get to the main topic of this post, I should offer a bit of background. I am currently working on an integrated software package for the qualitative study of social processes, called Q-SoPrA (an acronym for **So**cial **Pr**ocess **A**nalysis). The program can be used for data entry, data management, hierarchical coding for attributes (think CAQDAS-style coding), coding for network relationships, coding for linkages between events (see the work of [David Heise][1] for a main source of inspiration in this), abstracting larger events from smaller ones, visualising event graphs, visualising event hierarchies, visualising network graphs, visualising occurrence graphs (similar to [Bi-Dynamic Line Graphs][2]), and basic analysis. I intend to write some technical as well as non-technical posts about Q-SoPrA and its development. The technical posts will deal primarily with what happens on 'the back stage' of the program, that is, discuss the underlying source code. The non-technical posts will focus primarily on Q-SoPrA's 'front stage', discussing its features and how to use them. This post is going to be a technical one. 
 
 <br><br>![The Welcome Screen of Q-SoPrA](/assets/posts/Q-SoPrA/welcome_dialog.png){: .center-image}<br><br>
@@ -17,7 +17,7 @@ The main reason for writing the more technical posts is that I have made heavy u
 <br><br>![Help me Stack Overflow!](https://pbs.twimg.com/media/B1xRpb-CcAAlIPs.png){: .center-image} <br><br>
 
 
-# What's the problem?
+## What's the problem?
 In this post I will discuss something related to the *Data Widget* that I wrote for Q-SoPrA. I divided Q-SoPrA into several widgets that perform the main tasks of the program (the tasks listed in the background discussion above). The Data Widget handles the user's interaction with data. In this case, the data take the form of chronologically ordered *incidents*, which are bracketed, qualitative descriptions of activities. The concept of incidents was introduced during the [Minnesota Innovation Research Program][3], although I work with a slightly different idea of what information should be included in an incident:
 
 1. An indication of the **time of occurrence** (e.g., the hour, the day, the month, the year).
@@ -203,7 +203,7 @@ void MainWindow::importFromCsv() {
 {% endhighlight %}
 </details> <br>
 
-## Handling embedded line breaks
+### Handling embedded line breaks
 
 So, what exactly happens here? Well, I won't discuss all the lines of code in detail, but I will discuss the ones most important to the problem at hand (parsing 'messy' csv-files). The basic logic of the function is that we read a csv file line by line, and that we process each line in turn. One challenge that we might encounter while parsing 'messy' csv files is the presence of embedded line breaks. This means that one cell includes multiple lines of data, separated by so-called line breaks. See the screenshot below for an example. In the second row of data (below the header), we see a couple of line breaks. 
 
@@ -275,7 +275,7 @@ bool MainWindow::checkLineBreaks(std::string line) {
 
 The `buffer` object is the original line of data that we are currently reading. If we find a line break in this object, then we create a new object `extra`, put the next line of data in it, and append it to `buffer` (we also include two line breaks to mimic the original line break; why I chose to use two has to do with something that is not important right now). Since we are using a while loop, the program will keep doing this as long as it encounters line breaks in the current version of `buffer`. Pretty neat, huh?
 
-## Handling text fields with embedded double quotes
+### Handling text fields with embedded double quotes
 
 Another challenge we are likely to encounter when reading 'messy' csv files is the inclusion of text fields (cells with longer strings of text in them) that might also have embedded double quotes, for example when the text includes a fragment where someone is quoted. More importantly, they might have embedded commas that separate different parts of a sentence. The problem with this is that we also use commas to distinguish between different columns of our csv file, and we somehow need to keep the two different types of comma separate. Let us first slightly adapt our example file to demonstrate what happens to the csv file if we embed double quotes and commas in a text field. 
 
@@ -400,7 +400,7 @@ Now, let's discuss the last line of data in the file. This case is quite simple.
 
 Thus, the problematic cases we discussed earlier are handled quite well. In fact, I am still quite surprised myself how flexible this set of functions is with messy data.
 
-# Closing comments
+## Closing comments
 
 As mentioned before, the functions discussed above take inspiration from various comments I encountered while browsing sites like Stack Overflow, and it would be nice to acknowledge everyone who has shared the knowledge that I made use of to write these functions, but I honestly do not remember where I found the different snippets of information. I guess I'll just have to thank the Stack Overflow community at large. 
 
@@ -413,4 +413,3 @@ I hope they turn out to be useful to others!
 [3]: https://pubsonline.informs.org/doi/abs/10.1287/orsc.1.3.313
 [4]: https://en.wikipedia.org/wiki/Comma-separated_values
 [5]: http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm#FileFormat
-

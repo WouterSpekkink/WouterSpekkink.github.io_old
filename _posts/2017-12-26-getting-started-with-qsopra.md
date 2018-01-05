@@ -7,7 +7,7 @@ tags: Software Q-SoPrA Non-Technical
 
 ---
 
-# Introduction
+## Introduction
 As I mentioned in [my previous post][1], I am currently working on an integrated software package for the qualitative study of social processes, called Q-SoPrA (**Q**ualitative **So**cial **Pr**ocess **A**nalysis). The program can be used for various tasks, including data management, qualitative coding, and visualisation. It is still under construction, and I have not opened the source or distributed any binaries yet (but I will once a more or less fully-featured and stable version is ready). In addition to some more technical posts about the software ([such as the previous one][1]), I intend to write several non-technical posts, discussing the features of Q-SoPrA and how to use them. Eventually, most of this information will also be available from the GitHub wiki of Q-SoPrA, but I think having some less condensed discussions of features is also useful. 
 
 <details>
@@ -19,7 +19,7 @@ I understand that having posts like this one will be more useful once the softwa
 
 In this post, I want to discuss the basics of how to get started with Q-SoPrA. I start with a discussion of the logic behind the kind of data that Q-SoPrA works with. Then, I discuss the creation and loading of data sets, as well as data management (e.g., entering data, editing data, importing data). 
 
-# Incidents as data points
+## Incidents as data points
 I usually refer to the data sets that Q-SoPrA works with as *event data sets*, because it gives an intuitive sense of the kind of data stored in them, but the name *incident data sets* is actually more appropriate. The data sets consist of chronologically ordered *incidents*, which are bracketed, qualitative descriptions of interest to the process under study. The concept of incidents was, as far as I can tell, invented during the [Minnesota Innovation Research Program][2] (also see [this book][3] for detailed instructions on how to construct data sets like those used during the program, and [this book][4] for some empirical results of the program).
 
 The operational definition of an incident that I use, and that I implemented in Q-SoPrA, is slightly different from that of the original inventors of the concept. In Q-SoPrA, an incident is assumed to include the following information: 
@@ -68,7 +68,7 @@ Finally, in Q-SoPrA the analyst has the option to include comments, which may be
 
 People that have experience with qualitative research (and particularly grounded theory) are probably familiar with the notion of [memos][8]. In Q-SoPrA, the comment field can be used to write such memos. Comment fields are the only fields related to incidents that can be altered at any time (the other incident-related fields, i.e., the indication of timing, the description, the sources of data, and the 'raw' data can only be changed from the Data Widget). 
 
-# The structure of Q-SoPrA's datasets
+## The structure of Q-SoPrA's datasets
 The structure of Q-SoPrA's input datasets is quite simple: A data set is a table with 7 columns. Only 5 of these columns are visible to the user (see below), which are the columns that record the *Timing*, the *Description*, the *Raw* data, the *Comments*, and the *Source(s)* associated with incidents. The information included in these columns should be supplied by the analyst, by writing new incidents, or by importing data sets from external csv files (also see [my previous post][1] for a technical discussion on importing data from csv files). 
 
 <br><br>[![The data widget view](/assets/posts/Q-SoPrA/data_widget.png){: .center-image}](/assets/posts/Q-SoPrA/data_widget.png)<br><br>
@@ -83,7 +83,7 @@ Q-SoPrA uses sqlite databases to store all information that the user creates whi
 
 The second column that is hidden from the user contains an *order* variable, which simply records the current position of an incident in the chronological order (the table of the data widget does show a row number, which always has the same value as the order variable). The value of this variable determines the position of an incident as it is shown to the user in the data widget (see the screenshot above). The value of this variable is changed whenever an incident is moved up our down in the table, which can be done from the data widget. Whenever the analyst performs such an operation, Q-SoPrA automatically calculates the new values of the order variable for the affected incidents. The values of the order variable also determine how the data are presented to the user in other widgets, such as the qualitative coding widgets. In addition, in the visualisation widgets the order variable can be used to filter visualisations to only visualise data from a particular episode in the process (I will discuss these topics in more detail in future posts). 
 
-# Working with Q-SoPrA's datasets
+## Working with Q-SoPrA's datasets
 When you start up Q-SoPrA, you will always be shown a Welcome Dialog first (see screenshot below). 
 
 <br><br>![The Welcome Screen of Q-SoPrA](/assets/posts/Q-SoPrA/welcome_dialog.png){: .center-image}<br><br>
@@ -126,7 +126,7 @@ The user will occasionally want to change the order of the incidents (for exampl
 
 Finally, the user can remove an incident from the table by using the *Remove incident* option. Removing an incident will also remove all information that has been associated with it, such as assigned attributes (not the attributes themselves), and linkages that have been created with other incidents (I discuss this in a future post). The user will always be shown a warning dialog when using this option, **since it cannot be undone.**
 
-# Getting started with Q-SoPrA
+## Getting started with Q-SoPrA
 In conclusion, getting started with Q-SoPrA is easy. You simply create a new data set, and starting filling the data widget's table with incidents. In my view, by building your data set you are basically building your case. 
 
 Indeed, while analysing the data you will often find yourself going back to the data widget to add more incidents, to edit, split or merge existing ones, or to change the order of the incidents. In my experience you will continue to do so throughout most of the analytic process, as your understanding of the case of interest gets more refined. 

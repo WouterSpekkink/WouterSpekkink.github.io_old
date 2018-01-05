@@ -2,8 +2,8 @@
 layout: post
 title:  "Bi-dynamic Line Graphs"
 date:   2017-03-10 14:25:10 +0000
-categories: Software
-tags: Software
+categories: Software 
+tags: Software 
 ---
 
 # Introduction
