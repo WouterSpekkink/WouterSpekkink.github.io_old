@@ -347,11 +347,19 @@
 
 @media (min-width: 64em) {
     .wrapper {
+	max-width: 48rem;
 	margin-left: 14rem;
 	margin-right: 4rem;
     }
 }
 
+@media (min-width: 80em) {
+    .wrapper {
+	max-width: 64rem;
+	margin-left: 14rem;
+	margin-right: 4rem;
+    }
+}
 
 .center-image {
     margin: 0 auto;
