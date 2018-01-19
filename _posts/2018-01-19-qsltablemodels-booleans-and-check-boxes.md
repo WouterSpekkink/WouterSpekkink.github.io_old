@@ -9,7 +9,7 @@ tags: Software Q-SoPrA Technical C++ Qt
 ## Interfacing with sql databases with Qt5
 This post is on an issue that I struggled with very recently, while working on Q-SoPrA. What I wanted to achieve was relatively simple: I wanted to have tables that fetch data from sql databases, and in which one column shows check boxes to set/unset a boolean variable. The screenshot below shows an example. 
 
-<br><br>![Table with check boxes](/assets/posts/qsqltablemodels-booleans-and-check-boxes/table.png){: .center-image}<br><br>
+<br><br>[![Table with check boxes](/assets/posts/qsqltablemodels-booleans-and-check-boxes/table.png){: .center-image}](/assets/posts/qsqltablemodels-booleans-and-check-boxes/table.png)<br><br>
 
 What you see in the screen shot is [QTableView][9] widget that shows data that it fetches from [QSqlTableModel][5] that interfaces with a table of a [sqlite][2] database. This post is about how to create the interactive check boxes shown in the right-most column. There are two main hurdles in getting the [QTableView][9] widget to work with check boxes:
  1. Sqlite databases don't actually support boolean variables. You can use an integer variable to 'simulate' a boolean variable by setting it to `0`(for `false`) or `1` (for `true`), but you will of course need to do a bit of extra work to make the [QSqlTableModel][5] properly treat it as a boolean (or something that can be switched on or off) in read & write operations. This can be done by sub-classing the [QSqlTableModel][5], and re-implementing its [flags()][18], [data()][12] and [setData()][13] functions, as suggested [here][11].

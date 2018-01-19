@@ -36,8 +36,6 @@ Most of the relatively simple csv parsers that I have seen will run into problem
 
 Let's start with the main function, called `importFromCsv()`, (which calls two other customised functions). 
 
-<details>
-<summary><b>Click to here to see the code for the importFromCsv function</b></summary>
 {% highlight c++ %}
 /* 
    This function is designed to facilitate importing data from 
@@ -201,7 +199,6 @@ void MainWindow::importFromCsv() {
   aw->retrieveData();
 }
 {% endhighlight %}
-</details> <br>
 
 ### Handling embedded line breaks
 
@@ -235,8 +232,6 @@ One thing we could do whenever we encounter an unequal number of quotes, is to c
 
 That is what happens in the `while (checkLineBreaks(buffer) == true)` loop. 'checkLineBreaks(QString line)' is an additional function that I wrote, and that returns true if the parser thinks there is an embedded line break in the current line. I show the while loop and the accompanying 'checkLineBreaks(QString line)' function below.
 
-<details>
-<summary><b>Click to here to see the while loop and accompanying function</b></summary>
 {% highlight c++ %}
 while (checkLineBreaks(buffer) == true) {
   std::string extra;
@@ -271,7 +266,6 @@ bool MainWindow::checkLineBreaks(std::string line) {
   return lineBreak;  
 }
 {% endhighlight %}
-</details> <br>
 
 The `buffer` object is the original line of data that we are currently reading. If we find a line break in this object, then we create a new object `extra`, put the next line of data in it, and append it to `buffer` (we also include two line breaks to mimic the original line break; why I chose to use two has to do with something that is not important right now). Since we are using a while loop, the program will keep doing this as long as it encounters line breaks in the current version of `buffer`. Pretty neat, huh?
 
@@ -291,8 +285,6 @@ In the second line below the header, you'll find a text cell with a single embed
 
 In the csv parser that I wrote, these cases are all handled by the `splitCsvLine(&tokens, buffer)` function. In the first block of code I included above, the function is called right after we have checked the lines for any line breaks. In other words, the version of buffer that is fed into the `splitCsvLine(&tokens, buffer)` function is already a complete version, where all line breaks have been dealt with. 
 
-<details>
-<summary><b>Click to here to see the splitCsvLine() function</b></summary>
 {% highlight c++ %}
 /* 
    Function to split csv lines.
@@ -388,7 +380,6 @@ void MainWindow::splitCsvLine(std::vector<std::string> *tokens,
   tokens->push_back(tempString);
 }
 {% endhighlight %}
-</details> <br>
 
 This function reads through the object `buffer` (which is a string) character by character, and eventually pulls different substrings from the `buffer` object that we use as tokens to be written to our database. Near the beginning of this function, we define a bool variable `bool inTextField` that we use to check whether we are currently reading characters that are part of a text field. The idea behind this is very simple: If the bool is set to false, and we encounter a double quote, then this is taken as a sign that we are, from now on, inside a text field. As long as we are inside a text field, any commas we encounter will be ignored, and any double quotes we encounter will be handled in a special way. 
 
