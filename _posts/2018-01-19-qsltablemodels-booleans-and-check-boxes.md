@@ -1,5 +1,5 @@
 ---
-layout: post
+marklayout: post
 title:  "QSqlTableModels, booleans and check boxes"
 date:   2018-01-19 09:07:00 +0000
 categories: Software Q-Sopra Technical C++ Qt
@@ -11,7 +11,7 @@ This post is on an issue that I struggled with very recently, while working on Q
 
 <br><br>[![Table with check boxes](/assets/posts/qsqltablemodels-booleans-and-check-boxes/table.png){: .center-image}](/assets/posts/qsqltablemodels-booleans-and-check-boxes/table.png)<br><br>
 
-What you see in the screen shot is [QTableView][9] widget that shows data that it fetches from [QSqlTableModel][5] that interfaces with a table of a [sqlite][2] database. This post is about how to create the interactive check boxes shown in the right-most column. There are two main hurdles in getting the [QTableView][9] widget to work with check boxes:
+What you see in the screen shot is [QTableView][9] widget that shows data that it fetches from a [QSqlTableModel][5] that interfaces with a table of a [sqlite][2] database. This post is about how to create the interactive check boxes shown in the right-most column. There are two main hurdles in getting the [QTableView][9] widget to work with check boxes:
  1. Sqlite databases don't actually support boolean variables. You can use an integer variable to 'simulate' a boolean variable by setting it to `0`(for `false`) or `1` (for `true`), but you will of course need to do a bit of extra work to make the [QSqlTableModel][5] properly treat it as a boolean (or something that can be switched on or off) in read & write operations. This can be done by sub-classing the [QSqlTableModel][5], and re-implementing its [flags()][18], [data()][12] and [setData()][13] functions, as suggested [here][11].
  2. But if you do that, you'll have a quite ugly looking table, since the check boxes are all left-aligned in their column, with no obvious way to change that. In this case, the only solution seems to be to use a [QStyledItemDelegate][16] to handle the `paint()` function that determines how the column is visualised. A somewhat outdated example of how to do that is offered in the [Qt FAQ][17].
  
@@ -36,12 +36,11 @@ There are of course multiple ways to achieve this. I tend to use the [QSqlQuery]
   Assume that we have a column in our sql table in which we store a variable
   that corresponds to the sorting order of the table's rows. 
   We call this variable "order", and we set the lowest value of this variable
-  to be 0. 
+  to be 1. 
   If we consistently sort the sql table based on this variable, its value
   will always be the row number of the corresponding entry + 1.
 */
 int order = tableView->currentIndex().row() + 1; 
-int mark = 0;
 /* 
   We have a 'pretend boolean' variable that is called "mark". This is an integer
   that is set either to "0" or to "1".
@@ -49,6 +48,7 @@ int mark = 0;
   recorded for "mark". We initialise "mark" as "0", and change its value to "1" 
   if our condition holds true.
 */
+int mark = 0;
 if (myCondition == true) {
    mark = 1;
 }
@@ -63,8 +63,9 @@ query->prepare("UPDATE myTable SET mark = :mark, WHERE ch_order = :order");
 // We need to bind our order variable to the query.
 query->bindValue(":order", order); 
 // And then we can execute it. This will write the data to the table.
-query->exec(); 
-delete query; // Memory management
+query->exec();
+// Memory management 
+delete query; 
 
 {% endhighlight %}
 
@@ -76,7 +77,7 @@ QSqlQuery *query = new QSqlQuery;
 // No need to bind values to our query in this case, so we can immediately execute.
 query->exec("SELECT mark FROM myTable");
 /*
-  The results are now store in the query object, 
+  The results are now stored in the query object, 
   and we can use the next() method to iterate through the results.
 */
 while (query->next()) {
@@ -85,11 +86,12 @@ while (query->next()) {
   // Do something with the variable. In this case we just write it to the console output.
   qDebug() << currentMark;
 }
-delete query; // Memory management
+delete query; 
+// Memory management
 {% endhighlight %}
 
 ## Sub-classing QSqlTableModel
-Now, if we want user interaction with our 'pretend boolean' variable to be handled by a check box, we need to sub-class the [QSqlTableModel][5] that interfaces between the sql table, and the [QTableView][9] that visualises the data for the user. More specifically, we need to re-implement the `flags()`, `data()` and `setData()` member functions, and make our 'pretend boolean' (an integer set to `0` or `1`) behave as an item that can be checked and unchecked (I believe it was [this discussion][11] that led me to this insight). The [flags()][18] function basically determines how items recorded in the [QSqlTableModel][5] can be manipulated (see [this list][19] of possible flags). We want to re-implement this function to make sure that items that correspond to our 'pretend boolean' can be checked or unchecked by the user. This can be achieved quite easily:
+Now, if we want user interaction with our 'pretend boolean' variable to be handled by a check box, we need to sub-class the [QSqlTableModel][5] that interfaces between the sql table and the [QTableView][9] that visualises the data for the user. More specifically, we need to re-implement the `flags()`, `data()` and `setData()` member functions, and make our 'pretend boolean' (an integer set to `0` or `1`) behave as an item that can be checked and unchecked (I believe it was [this discussion][11] that led me to this insight). The [flags()][18] function basically determines how items recorded in the [QSqlTableModel][5] can be manipulated (see [this list][19] of possible flags). We want to re-implement this function to make sure that items that correspond to our 'pretend boolean' can be checked or unchecked by the user. This can be achieved quite easily:
 
 {% highlight c++ %}
 /* 
@@ -108,9 +110,9 @@ Qt::ItemFlags EventTableModel::flags(const QModelIndex & index) const {
 }
 {% endhighlight %}
 
-In the code snippet above, we make the assumption that our 'pretend boolean' is always recorded in the seventh column of our sql table. This may of course be different in your case. All we do is to check whether the current index being accessed exists in the seventh column. If yes, then we communicate to the program that the item at this index should be checkable by the user. If no, then we revert to the default behaviour of the `QSqlTableModel::flags()` member function. 
+In the code snippet above, we make the assumption that our 'pretend boolean' is always recorded in the seventh column of our sql table. This may of course be different in your case. All we do is to check whether the current index being accessed exists in the seventh column. If yes, then we communicate to the program that the item at this index should be checkable by the user (we also make sure that we return all flags that are set by default). If no, then we revert to the default behaviour of the `QSqlTableModel::flags()` member function. 
 
-Our sub-classed version of [QSqlTableModel][5] still won't understand how to handle our 'pretend boolean' properly. We also need to re-implement the `data()` and `setData()` functions first. The [data()][12] and [setData()][13] are used to read data from, and write data to the sql table with which the QSqlTableModel is interfacing. 
+Our sub-classed version of [QSqlTableModel][5] still won't understand how to handle our 'pretend boolean' properly. For that, we also need to re-implement the `data()` and `setData()` functions. The [data()][12] and [setData()][13] are used to read data from, and write data to the sql table with which the QSqlTableModel is interfacing. 
 
 We should keep in mind here that in the QSqlTableModel, data are stored under different 'roles' (see an overview of these roles [here][14]). For example, data stored under the `Qt::DisplayRole` are the data that are actually shown to the user in the [QTableView][9], data stored under the `Qt::ToolTipRole` are the data that are shown when the user hovers his/her mouse cursor over an entry in the table, and data stored under the `Qt::EditRole` are the data that the user can manipulate in an editor. In the [list of roles][14] you will also find the `Qt::CheckStateRole`, and this is the role that we want to (re-)implement for our 'pretend boolean'. 
 
@@ -132,7 +134,7 @@ QVariant EventTableModel::data(const QModelIndex &index, int role) const {
       query->exec();
       query->first();
       int mark = query->value(0).toInt();
-      // Return the appropriate check state based on the state of mar.
+      // Return the appropriate check state based on the state of mark.
       if (mark == 1) {
 	return Qt::Checked;
       } else if (mark == 0) {
@@ -149,7 +151,7 @@ QVariant EventTableModel::data(const QModelIndex &index, int role) const {
   } else if (role == Qt::ToolTipRole) {
     // I just want the tool tip to show the data in the column.
     const QString original = QSqlTableModel::data(index, Qt::DisplayRole).toString();
-    QString toolTip = breakString(original); // breakString() breaks the text in smaller lines.
+    QString toolTip = breakString(original); // breakString() breaks the text into smaller lines.
     return toolTip;
   } else {
     /* 
@@ -163,11 +165,11 @@ QVariant EventTableModel::data(const QModelIndex &index, int role) const {
 }
 {% endhighlight %}
 
-So, the basic structure of this function is quite simple. We first check if the column of the sql table that is being accessed is the column with our `pretend boolean`. If yes, then we check whether the data is being access under the 'Qt::CheckStateRole'. If the answer is yes again, we run a block of code that reads the current value of `mark` in the sql table (which can be `0` or `1`, assuming that we have been consistent in our implementation of the interaction with this column of the sql table), and then returns the value `Qt::Checked` if the value read is `1`, or returns the value `Qt::Unchecked` if the value read is `0`. 
+So, the basic structure of this function is quite simple. We first check if the column of the sql table that is being accessed is the column with our `pretend boolean`. If yes, then we check whether the data are being accessed under the 'Qt::CheckStateRole'. If the answer is yes again, we run a block of code that reads the current value of `mark` in the sql table (which can be `0` or `1`, assuming that we have been consistent in our implementation of the interaction with this column of the sql table), and then returns the value `Qt::Checked` if the value read is `1`, or returns the value `Qt::Unchecked` if the value read is `0`. 
 
-There are a few other situations that the re-implemented function handles. If we are accessing data in the column with our `pretend boolean`, but we are not accessing the data under the `Qt::CheckState` role, then the function simply returns an empty QVariant(), effectively returning nothing. I did this to make sure that the corresponding column in the [QTableView][9] only shows a check box that visualises the current check state, and nothing else. If we are access data in any other column, the function first checks whether we are accessing data under the `Qt::ToolTipRole`. If yes, then we treat it as another special case, in which the user gets shown a tool tip that simply contains the visible contents of the cell currently being hovered over with the mouse cursor. If we are not accessing the data under the `Qt::ToolTipRole` (in all other cases), we just revert to the default implementation of the `QSqlTableModel::data()` function. 
+There are a few other situations that the re-implemented function handles. If we are accessing data in the column with our `pretend boolean`, but we are not accessing the data under the `Qt::CheckState` role, then the function simply returns an empty QVariant(), effectively returning nothing. I did this to make sure that the corresponding column in the [QTableView][9] only shows a check box that visualises the current check state, and nothing else. If we are accessing data in any other column, the function first checks whether we are accessing data under the `Qt::ToolTipRole`. If yes, then we treat it as another special case, in which the user gets shown a tool tip that simply contains the visible contents of the cell currently being hovered over with the mouse cursor. If we are not accessing the data under the `Qt::ToolTipRole` (in all other cases), we just revert to the default implementation of the `QSqlTableModel::data()` function. 
 
-If you have re-implemented the `data()` function in this way, then your [QTableView][9] should already show check boxes in the corresponding column. So far, so good. However, there are still a few problems. One problem is that the check boxes are aligned to the extreme left of the column, which makes the table look ugly. We will deal with this later. A more urgent problem is that checking / unchecking the check boxes won't actually do anything meaningful with the underlying data unless we also re-implement the `setData()` function. Let's do that next.
+If you have re-implemented the `data()` function in this way, then your [QTableView][9] should already show check boxes in the corresponding column. So far, so good. However, there are still a few problems. One problem is that the check boxes are aligned to the extreme left of the column, which makes the table look ugly. We will deal with this later. A more urgent problem is that checking / unchecking the check boxes won't actually do anything meaningful with the underlying data, unless we also re-implement the `setData()` function. Let's do that next.
 
 {% highlight c++ %}
 
@@ -205,7 +207,7 @@ bool EventTableModel::setData(const QModelIndex & index,
 
 {% endhighlight %}
 
-We have a similar kind of check to the one we had with the `setData()` function: We check whether we column we are writing to is the column that contains our `pretend boolean` variable. In this case, we check at the same time whether we are trying to write data under the `Qt::CheckStateRole`. If yes, we check whether the corresponding check box was set to checked or to unchecked, and write a `1` to the sql table in the first case, or a `0` in the latter. In all other situations we simply refer to the default implementation of the `QSqlTableModel::setData()` function.
+We have a similar kind of check to the one we had with the `data()` function: We check whether thes column we are writing to is the column that contains our `pretend boolean` variable. In this case, we check at the same time whether we are trying to write data under the `Qt::CheckStateRole`. If yes, we check whether the corresponding check box was set to checked or to unchecked, and write a `1` to the sql table in the first case, or a `0` in the latter. In all other situations we simply refer to the default implementation of the `QSqlTableModel::setData()` function.
 
 After re-implementing the `data()` function this way, checking / unchecking the check boxes in our [QTableView][9] will actually do something meaningful with the data in the underlying sql table. 
 
@@ -215,12 +217,12 @@ If you don't care about the alignment of the check boxes in their corresponding 
 It turns out that the only way to align the check boxes to the centre of their column is to use a [QStyledItemDelegate][16]. Well, there is [another approach that uses layouts][20], but that only works if you (1) manually append another column to your [QSqlTableModel][5], (2) explicitly create `QCheckBox` objects, (3) assign these to a parent `QWidget` object, (4) to which you then apply a centralised layout. This is quite an expensive procedure that can significantly reduce the performance of your program, and it only works well if you don't update your [QSqlTableModel][5] frequently. 
 
 <blockquote>
-This is because every time that you update your QSqlTableModel the manually appended column will disappear. You can of course solve this by writing a function that creates the extra column, and fills it with your manually created check boxes, and run this function whenever the QSqlTableModel's select function gets called. However, this will slow down your program quite a bit, and I also found some other drawbacks to this approach that are a bit outside the scope of this discussion.
+This is because every time that you update your QSqlTableModel the manually appended column will disappear. You can of course solve this by writing a function that creates the extra column, and fills it with your manually created check boxes, and run this function whenever the QSqlTableModel's select() function gets called. However, this will slow down your program quite a bit, and I also found some other drawbacks to this approach that are a bit outside the scope of this discussion.
 </blockquote>
 
 The approach that uses a [QStyledItemDelegate][16] is actually what is recommended in [Qt's FAQ][11] section. An example code snippet is offered there as well, although it is a bit outdated (it uses some functions that were deprecated in Qt5). Essentially, what you are required to do is to create your own sub-class of [QStyledItemDelegate][16], and re-implement its `paint()` and `editorEvent()` functions. The `paint()` function determines how the check box is visualised to the user, and the `editorEvent()` function determines how the user can interact with the check box.
 
-I included the snippet with my slightly adapted version of the re-implemented functions below. I am not going to pretend that I grasp every detail of what happens in these functions. I mostly different replaced some of the deprecated functions in the example offered in [Qt's FAQ][11].
+I included the snippet with my slightly adapted version of the re-implemented functions below. I am not going to pretend that I grasp every detail of what happens in these functions. I mostly replaced some of the deprecated functions in the example offered in [Qt's FAQ][11].
 
 {% highlight c++ %}
 /* 
@@ -299,7 +301,7 @@ The re-implemented version of the `paint()` function basically just changes the 
 
 The re-implemented version of the `editorEvent()` function handles various events through which the user might manipulate the current state of the check box. If an event meets the required conditions (e.g., a `QEvent::MouseButtonRelease` took place within the rectangle where the check box is drawn), then we call the `setData()` function (the one we re-implemented earlier) with the appropriate parameters. 
 
-There is actually one other thing we need to do if we want our [QStyledItemDelegate][16] to work. We need to tell our [QTableView][9] object to use the delegate in its seventh column. In my case, the [QTableView][9] object is name `tableView`, and the sub-classed version of the [QStyledItemDelegate][16] I created is named `QCheckBoxDelegate`. I set `tableView` to use the `QCheckBoxDelegate` by using the following function:
+There is actually one other thing we need to do if we want our [QStyledItemDelegate][16] to work. We need to tell our [QTableView][9] object to use the delegate in its seventh column. In my case, the [QTableView][9] object is named `tableView`, and the sub-classed version of the [QStyledItemDelegate][16] I created is named `CheckBoxDelegate`. I set `tableView` to use the `CheckBoxDelegate` by using the following function:
 
 {% highlight c++ %}
 tableView->setItemDelegateForColumn(7, new CheckBoxDelegate(tableView));
