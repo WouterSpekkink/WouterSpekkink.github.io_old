@@ -1,5 +1,5 @@
 ---
-marklayout: post
+layout: post
 title:  "QSqlTableModels, booleans and check boxes"
 date:   2018-01-19 09:07:00 +0000
 categories: Software Q-Sopra Technical C++ Qt
