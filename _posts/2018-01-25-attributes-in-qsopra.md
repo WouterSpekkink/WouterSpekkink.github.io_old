@@ -3,7 +3,7 @@ layout: post
 title:  "Attributes in Q-SoPrA"
 date:   2018-01-25 23:26:00 +0000
 categories: Software Q-Sopra Non-Technical 
-tags: Software Q-Sopra Non-Technical 
+tags: Software Q-SoPrA Non-Technical 
 ---
 
 ## Introduction
