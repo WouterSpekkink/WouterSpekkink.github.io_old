@@ -2,8 +2,8 @@
 layout: post
 title:  "Drawing parallel edges in Qt"
 date:   2018-02-18 09:07:00 +0000
-categories: Software Q-Sopra Technical Qt
-tags: Software Q-Sopra Technical Qt
+categories: Software Q-SoPrA Technical Qt
+tags: Software Q-SoPrA Technical Qt
 ---
 
 ## Introduction
