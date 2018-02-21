@@ -2,8 +2,8 @@
 layout: post
 title:  "Relationships in Q-SoPrA"
 date:   2018-02-21 19:00:00 +0000
-categories: Software Q-Sopra Non-Technical
-tags: Software Q-Sopra Non-Technical 
+categories: Software Q-SoPrA Non-Technical
+tags: Software Q-SoPrA Non-Technical 
 ---
 
 ## Introduction: Process *and* structure
