@@ -72,7 +72,9 @@ The GitHub repository for the program can be found [here][5].
 
 If you would like to use this software, then please use the following citation:
 
-Spekkink, W. A. H. BLDG Matrix Converter [Computer Software]. [![DOI](https://zenodo.org/badge/84478618.svg)](https://zenodo.org/badge/latestdoi/84478618)
+Spekkink, W. A. H. BLDG Matrix Converter [Computer Software]. [10.5281/zenodo.1215462][https://doi.org/10.5281/zenodo.1215462].
+
+[![DOI](https://zenodo.org/badge/84478618.svg)](https://zenodo.org/badge/latestdoi/84478618)
 
 
 ## Multi-dimensional scaling in Gephi
