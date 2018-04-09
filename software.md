@@ -70,6 +70,11 @@ You can download the program using the following links:
    
 The GitHub repository for the program can be found [here][5].
 
+If you would like to use this software, then please use the following citation:
+
+Spekkink, W. A. H. BLDG Matrix Converter [Computer Software]. [![DOI](https://zenodo.org/badge/84478618.svg)](https://zenodo.org/badge/latestdoi/84478618)
+
+
 ## Multi-dimensional scaling in Gephi
 I wrote two plugins for [Gephi][1] that introduce the possibility to create layouts using Multi-Dimensional Scaling (MDS) of nodes, based on their path distances. This layout only works well with graphs that form one component, since distances between unconnected nodes are infinite, leading to somewhat awkward results.
 
