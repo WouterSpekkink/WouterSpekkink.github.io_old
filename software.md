@@ -169,7 +169,7 @@ I wrote several scripts for R, mostly focused on stuff related to directed a-cyc
 [1]: http://www.gephi.org
 [2]: http://journals.sagepub.com/doi/abs/10.1177/2059799115622766
 [3]: https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/v1.0.0/BDLG_Matrix_Converter_Linux_v1.0.tar.gz
-[4]: https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/v1.0.0/BLDG_Matrix_Converter_win_v1.0.0.zip
+[4]: https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/v1.0.0/BDLG_Matrix_Converter_win_v1.0.0.zip
 [5]: https://github.com/WouterSpekkink/BDLG_Matrix_Converter
 [6]: https://github.com/gephi/gephi-plugins/tree/master-forge
 [7]: https://github.com/WouterSpekkink/R-Scripts
