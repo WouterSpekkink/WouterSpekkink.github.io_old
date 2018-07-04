@@ -13,9 +13,9 @@ This program is based on an idea first proposed in an article by Chiara Broccate
 # Downloads
 You can download the program using the following links:
 
-   * [Download for Linux](https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/v1.0.0/BDLG_Matrix_Converter_Linux_v1.0.tar.gz)
+   * [Download for Linux](https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/BDLG_Matrix_Converter_Linux_V1.0.1/BDLG_Matrix_Converter_Linux_v1.0.1.tar.gz)
   
-   * [Download for Windows](https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/v1.0.0/BDLG_Matrix_Converter_win_v1.0.0.zip)
+   * [Download for Windows](https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/BDLG_Matrix_Converter_Windows_V1.0.1/BDLG_Matrix_Converter_Windows_v1.0.1.zip)
 
 # Bi-dynamic line graphs
 In their article, Brocatelli et al. (2016) introduce bi-dynamic line-graph (BDLG) projections of social processes to study dynamics in social networks. The BDLG can be understood as a special projection of a two-mode network of actors and events. In matrix form, a two-mode network is usually presented as an incidence matrix with actors in rows, and events in columns, like so (example based on article mentioned above):
