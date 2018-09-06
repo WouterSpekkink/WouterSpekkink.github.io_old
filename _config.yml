@@ -27,7 +27,7 @@ github_username:  WouterSpekkink
 # Build settings
 markdown: kramdown
 theme: minima
-plugins:
+plugins_dir:
   - jekyll-feed
 
 
