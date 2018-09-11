@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Drawing parallel edges in Qt"
-date:   2018-02-23 09:07:00 +0000
+date:   2018-09-11 14:46 +0000
 categories: Software Q-SoPrA Technical Qt
 tags: Software Q-SoPrA Technical Qt
 ---
@@ -29,16 +29,17 @@ Before I get into some specific challenges related to drawing parallel edges, it
 
 <br><br>[![Wrong and Right](/assets/posts/drawing-parallel-edges-in-qt/Wrong_Right_Edge.png){: .center-image}](/assets/posts/drawing-parallel-edges-in-qt/Wrong_Right_Edge.png)<br><br>
 
-In Qt's documentation you can find the [Diagram Scene example][7] that achieves almost exactly this (see especially the [header file][8] and the [cpp file][9] of the Arrow class used in this example). The objects that Q-SoPrA uses to draw edges are based on this example, although obviously I had to make a number of changes to get exactly what I need. I will focus on my own adaptation of this example, which is a class I called `DirectedEdge`, but I want to make clear that I obviously did not come up with all of the following myself.
+In Qt's documentation you can find the [Diagram Scene example][7] that achieves almost exactly this (see especially the [header file][8] and the [cpp file][9] of the Arrow class used in this example). The objects that Q-SoPrA uses to draw edges are inspired by this example, although the classes ended up looking quite different due to various specific requirements I had for my own class.  The class I developed is called `DirectedEdge`, and it is what I will focus upon in the remainder of this post. 
 
 Let us first take a look at the constructor of the `DirectedEdge` class. Here is a code snippet from which I have removed some details that are not important for the examples in this post. 
 
 {% highlight c++ %}
 DirectedEdge::DirectedEdge(NetworkNode *startItem, NetworkNode *endItem, QString submittedType,
 			   QString submittedName, QGraphicsItem *parent)
-  : QGraphicsLineItem(parent) {
-  start = startItem; // setting the start item of this edge.
-  end = endItem; // setting the end item of this edge.
+  : QGraphicsLineItem(parent) 
+{
+  start = startItem;
+  end = endItem;
   color = Qt::black;
   setPen(QPen(color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
   height = 20;
@@ -53,7 +54,7 @@ DirectedEdge::DirectedEdge(NetworkNode *startItem, NetworkNode *endItem, QString
 
 As you can see, we are passing pointers to objects of the `NetworkNode` class to the constructor of `DirectedEdge`. The `NetworkNode` class is a sub-classed version I created of the [`QGraphicsItem` class][5], and I use this class to draw the nodes of my network diagrams. When we add `NetworkNode`s (or any other `QGraphicsItem` to a `QGraphicsScene` object, then these will be assigned a *scene position*, that is, a point in the scene that is defined by an x-coordinate and a y-coordinate. We can access the *scene position* of a `NetworkNode` (or other types of `QGraphicsItems`) by using the ['scenePos()' member function][13]. This will return a ['QPointF' object][14] that contains the item's coordinates. So, if we want to know from where to where to draw a certain edge, the obvious thing to do would be to first find the *scene positions* of its start node - start->scenePos() - and end node - end->scenePos() - and then draw the line between those two positions.
 
-As I mentioned before, we actually want our line to stop shortly before it reaches its end point. What we could do is to create a [`QLineF` object][15], passing our start and end points as parameters, and then use the `setLength()` function to make the line slightly shorter: `myLine.setLength(myLine.length() - 20)`. 
+As I mentioned before, we actually want our line to stop shortly before it reaches its end point. What we could do is to create a [`QLineF` object][15], passing our start and end points as parameters, and then use the `setLength()` function to make the line slightly shorter: `myLine.setLength(myLine.length() - 18)`. 
 
 Then we still need to add our arrowhead. For this, I simply followed the [Diagram Scene Example][7] provide in the online documentation for Qt. Basically, this involves creating a [`QPolygonF`][16] object with the shape of our arrowhead, and have this object drawn near the end point of our line. 
 
@@ -96,138 +97,94 @@ So, what about this control point? Consider the image I have linked to below (fo
 
 So far so good. Assume that our starting point is at coordinates `(0, 5)` in the scene, and our end point is at coordinate `(10, 5)` in the scene, we can first simply calculate the point that lies exactly in between them: `x = (10 + 0) / 2 = 5` and `y = (5 + 5) / 2 = 5`, giving us the point at coordinates `(5, 5)`. Then we still need to set the 'height' of the curve, which, in this case, we can do simply by adding some constant to the y-coordinate of our middle point, giving us, for example, the point at coordinates `(5, 25)`. If we then pass this point to the `quadTo()` function, we will get a nice curved line.
 
-This example was relatively simple, because the slope of the straight line between our starting point and our end point is 0. This makes finding the control point relatively straightforward. However, consider now that we have a line that starts at coordinates `(0, 5)` and ends at coordinates `(10, 10)`. Finding the point that lies exactly in the middle is still quite easy: `x = (0 + 10) / 2 = 5` and `y = 5 + 10 / 2 = 7.5`. However, how do we now find the control point, somewhere 'above' this middle point? We cannot simply at a constant value to the y-coordinate of our middle point, because that would place the control point somewhere right from the middle of the line, and create a curve that skews to the left. It is very likely that someone with more training in geometry will have an easy solution to his problem, and could tell me very quickly how to find our control point in this case. I came up with a different solution that makes use of the flexibility of the [`QPainter` class][21]. The steps that I take are as follows:
+This example was relatively simple, because the slope of the straight line between our starting point and our end point is 0. This makes finding the control point relatively straightforward. However, consider now that we have a line that starts at coordinates `(0, 5)` and ends at coordinates `(10, 10)`. Finding the point that lies exactly in the middle is still quite easy: `x = (0 + 10) / 2 = 5` and `y = 5 + 10 / 2 = 7.5`. However, how do we now find the control point, somewhere 'above' this middle point? We cannot simply at a constant value to the y-coordinate of our middle point, because that would place the control point somewhere right from the middle of the line, and create a curve that skews to the left (see the left part of the picture above). 
 
-### Finding the distance between the two points
-I first calculate the distance between my starting point and my end point, which is basically what the length of a straight line between these points will be: 
+There are multiple possible solutions here. One thing we could do is to simply (1) calculate the distance between the start point and end point of the edge (using the pythagorean theorem), (2) draw an imaginary straight line from our start point with a slope of 0 (that is, parallel to our x-axis), and with a length that equals the distance we measured in step 1, (3) create a curved edge from the start and end point of our imaginary straight line, using the procedure described above, (4) calculate the angle between our imaginary straight line and the sloped line from our original starting point to our original end point, and then (5) [rotate()][23] the painter by the number of degrees of that angle before drawing our edge. In effect, we are just drawing a curved edge between two points on a horizontal line, and we are then rotating that edge before it is drawn, thereby changing its end point. This is the solution I used for a while, because it is relatively simple to implement. However, it does cause some complications for calculating the [bounding rect][24] and the [shape][25] of the edge, because we are essentially working in multiple coordination systems. I will not discuss these complications in detail here, but it is important to know that they can cause unwanted behaviour in visualisations.
 
-{% highlight c++ %}
+There is another, better solution that I eventually switched to after experiencing issues with my first solution. This solution starts with drawing an imaginary straight line between the start and the end points of our edge. We then calculate the midpoint of our line, as before. Then we draw a straight line perpendicular to our first line that crosses our midpoint, and we pick a point on that line as our control point. This sounds relatively straightforward, but it took me some time to figure out how to properly implement the formula for setting the control point. 
 
-  qreal xDiff = end->pos().x() - start->pos().x();
-  qreal yDiff = end->pos().y() - start->pos().y();
-
-  qreal distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2));
-  
-{% endhighlight %}
-
-### Imagining a 0-slope line of the same length
-The next step is to draw a line with a slope of `0`, and with a length that equals the distance we have just created. Actually, we do not actually draw this line, but we define the starting point and end point that this line would have. It does not really matter all that much what the starting point is. What is important, is that the y-coordinates of the starting point and the end point are the same. We could define our two points simply as follows:
+Rather than including all these steps in the ['paint()' function][12] of our edge, I wrote a separate `calculate()` function that makes the necessary calculations, and is called by the paint function (as well as by other functions that require knowledge of the control point's position). See the two functions in the code snippet below.
 
 {% highlight c++ %}
-  QPointF tempStart = QPointF(0, 0);
-  QPointF tempEnd = QPointF(distance, 0); // The distance was calculated in the previous snippet.
-{% endhighlight %}
 
+void DirectedEdge::calculate() 
+{
+  // We first calculate the distance covered by our edge
+  qreal dX = end->pos().x() - start->pos().x();
+  qreal dY = end->pos().y() - start->pos().y();
+  qreal distance = sqrt(pow(dX, 2) + pow(dY, 2));
+  // Then we create a straight line from our start point to our end point and shorten its length
+  QLineF newLine = QLineF(start->pos(), end->pos());
+  newLine.setLength(newLine.length() - 18);
+  // Then we calculate the coordinates of our midpoint
+  qreal mX = (start->pos().x() + newLine.p2().x()) / 2;
+  qreal mY = (start->pos().y() + newLine.p2().y()) / 2;
+  // And the coordinates of our control point. We use the edges height as a scaling factor
+  // to determine the 'height' of the control point on a line perpendicular to our 
+  // original line (newLine).
+  qreal cX = height * (-1 * (dY / distance)) + mX;
+  qreal cY = height * (dX / distance) + mY;
+  controlPoint = QPointF(cX, cY);
+  // We create another line from our control point to our end point and shorten its length
+  ghostLine = QLineF(controlPoint, end->pos());
+  ghostLine.setLength(ghostLine.length() - 18);
+  // Then we do the calculations we need to create our arrowhead
+  double angle = ::acos(ghostLine.dx() / ghostLine.length());
+  if (ghostLine.dy() >= 0)
+    angle = (Pi * 2) - angle;
+  qreal arrowSize = 10;
+  arrowP1 = ghostLine.p2() - QPointF(sin(angle + Pi /3) * arrowSize,
+				     cos(angle + Pi / 3) * arrowSize);
+  arrowP2 = ghostLine.p2() - QPointF(sin(angle + Pi - Pi / 3) * arrowSize,
+				     cos(angle + Pi - Pi / 3) * arrowSize);
+  // We set the new line as the line for this edge object and communicate that we 
+  // are about to change the objects geometry (this will makes sure the bounding rect
+  // is reset as well.
+  setLine(newLine);
+  prepareGeometryChange();
+}
 
-### Calculate the control point for the imaginary line
-Now can calculate the point that lies in the middle of the two temporary points we just defined. Then, since the line has a slope of `0`, we can simply add a constant value to the y-coordinate of the middle point to create a control point that lies exactly above the middle point. 
-
-{% highlight c++ %}
-  qreal mX = (tempStart.x() + tempEnd.x()) / 2;
-  qreal mY = (tempStart.y() + tempEnd.y()) / 2;
-  midPoint = QPointF(mX, mY);
-  midPoint.setY(midPoint.y() + height); // We use a separate function to set the height.
-{% endhighlight %} 
-
-With the information we have now, we could draw a curved line. However, this line would be drawn at the wrong location. To correct this, we take some additional steps.
-
-### Moving the curved line to the correct location
-First, we can easily set the correct starting point for our line by using the `moveTo()` function of the `QPainterPath` class. Indeed, our end point will still be incorrect. But here is a trick we can use: We can rotate our `QPainter` object, using its [`rotate()` function][22]. The neat thing about this is that this will rotate the `QPainter` within the coordinate system of the `QScene` object that we are drawing in. The `QPainter` will still keep its local coordinates, which means that we can still treat our line as if it is a line with a slope of `0`, even though it is actually rotated in the `QScene`. 
-
-To find the rotation value, we first calculate the angle between our two points (relative to the x-axis of the `QScene`). This will give us a value in radians that we should then convert to degrees.
-
-{% highlight c++ %}
-  // theta is initially the angle in radians, so we convert it to degrees.
-  theta = atan2(yDiff, xDiff);
-  theta = qRadiansToDegrees(theta);
-{% endhighlight %} 
-
-
-
-My implementation of the paint function is as follows:
-
-{% highlight c++ %}
-const qreal Pi = 3.14;
-
-void DirectedEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) {
+void DirectedEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) 
+{
+  // We have to set a pen and its colours.
   QPen myPen = pen();
   myPen.setColor(color);
   painter->setPen(myPen);
   painter->setBrush(color);
-  calc(); // see below
-
+  // We call the calculate function outlined above.
+  calculate();
+  // We create the arrowhead, using ghostLine (from the control point to slight before the end point)
+  // to determine the direction from which the arrow is pointing.
   arrowHead.clear();
-  arrowHead << oLine.p2() << arrowP1 << arrowP2;
-
+  arrowHead << ghostLine.p2() << arrowP1 << arrowP2;
+  // We create a path object as a based for our curved edge.
   QPainterPath myPath;
-  myPath.moveTo(tempStart);
-  myPath.quadTo(midPoint, oLine.p2());
-  painter->translate(start->pos() - tempStart);
-  painter->rotate(theta);
+  // We move this path to the start point of our edge.
+  myPath.moveTo(start->pos());
+  // The we create a bezier curve to our end point, using the control point to curve it
+  myPath.quadTo(controlPoint, ghostLine.p2());
+  strokePath = myPath;
+  // And then we draw the arrowhead and the curved line
   painter->drawPolygon(arrowHead);
   painter->strokePath(myPath, QPen(color));
 }
 
-void DirectedEdge::calc() {
-  // Let us first calculate the distance between our two points.
-  qreal xDiff = end->pos().x() - start->pos().x();
-  qreal yDiff = end->pos().y() - start->pos().y();
-
-  qreal distance = sqrt(pow(xDiff, 2) + pow(yDiff, 2));
-
-  // Then we draw two new points that are on a horizontal line.
-  // This makes it easier to draw a control point perpendicular to the line.
-  tempStart = QPointF(0, 0);
-  QPointF tempEnd = QPointF(distance, 0);
-
-  // Calculate midpoint
-  qreal mX = (tempStart.x() + tempEnd.x()) / 2;
-  qreal mY = (tempStart.y() + tempEnd.y()) / 2;
-  midPoint = QPointF(mX, mY);
-  midPoint.setY(midPoint.y() + height);
-
-  QLineF newLine = QLineF(tempStart, tempEnd);
-  setLine(newLine);
-
-  // But then we still need to rotate and translate the painter such that it draws
-  // the line between the correct points. 
-  // theta is initially the angle in radians, so we convert it to degrees.
-  theta = atan2(yDiff, xDiff);
-  theta = qRadiansToDegrees(theta);
-
-  oLine = QLineF(midPoint, tempEnd);
-  oLine.setLength(oLine.length() - 18);
-  
-  double angle = ::acos(oLine.dx() / oLine.length());
-  if (oLine.dy() >= 0)
-    angle = (Pi * 2) - angle;
-
-  qreal arrowSize = 10;
-  
-  arrowP1 = oLine.p2() - QPointF(sin(angle + Pi /3) * arrowSize,
-    cos(angle + Pi / 3) * arrowSize);
-  arrowP2 = oLine.p2() - QPointF(sin(angle + Pi - Pi / 3) * arrowSize,
-  cos(angle + Pi - Pi / 3) * arrowSize);
-  prepareGeometryChange();
-}
-
 {% endhighlight %}
 
-As you can see, the paint function calls another function that I called `calc()`, which I have also included in the code snippet. The `calc()` function is actually where the main work on deciding where and how to draw the edge is done. 
+## A few other things to note about these functions
+In addition to finding the control point (which I explained above how to do), there are a few other things we need to do to make sure that we end up with nice looking curved edges. First of all, we might have 3 or more parallel edges between the same nodes. If we want to make all edges visible, we need to increase the strength of the curve for each parallel edge that we add (to prevent them from overlapping). That is what the `height` scaling factor in the snippet above is used for. This height has to be set explicitly, for which I wrote a very simple function. Then it is simply a matter of keeping track of what edges we already have in our `scene` and to make sure that the `height`s of the curves of our edges are adjusted accordingly. This is something that needs to be handled at a higher level, and I will not discuss it any further here.
 
-
-
-
-
-## Drawing parallel edges
-What is so special about drawing parallel edges? Well, we need to make sure that, where parallel (multiple edges between the same pair of nodes) exist, that they are all easily visible. If we would simple draw multiple straight lines with arrowheads, the drawings would overlap, and we would still only be able to see one of the edges (the one that was drawn last). 
-
-In order to prevent this from happening, we can give the lines of the edges a curve, and we can increase the strength of curve as much as is needed. For example, if we have two parallel edges, we give one of the edges a weak curve, and we give the other a strong one, so that they don't overlap. If we have a third parallel edge, we give it an even stronger curve.
-
-We also have to make sure that that arrowhead that we attach to the curve follows the angle of the curve as it reaches its end point. Otherwise we will end up with an awkward looking arrow like the one shown in the screenshot below.
+We also need to make sure that our arrowhead actually points *from* the right direction. If we would attach our arrowhead to the original line we draw from the start point to the end point, it would make an awkward angle, as shown in the screenshot below.
 
 <br><br>[![Awkward arrowhead](/assets/posts/drawing-parallel-edges-in-qt/Wrong_Arrowhead.png){: .center-image}](/assets/posts/drawing-parallel-edges-in-qt/Wrong_Arrowhead.png)<br><br>
 
+This is relatively easy to correct with the resources that we already have. In the code snippet that I included above, you will see that I created an object that I called `ghostLine`, which is a line that runs from the control point that we calculated for the bezier curve to the end point of the edge (minus a small distance to prevent the line from overlapping with the node). This `ghostLine` is useful for determining where the curved edge should end, as well as for determining the angle that the arrowhead should point from. Essentially, what we can do is attach the arrowhead to the `ghostLine` and draw the arrowhead, but not draw the line itself. For illustrative purposes, I included a screenshot below where the `ghostLine` is drawn, so that you can get an idea of how it helps to determine the angle of the arrowhead.
+
+<br><br>[![Correct arrowhead](/assets/posts/drawing-parallel-edges-in-qt/Midpoint_Line.png){: .center-image}](/assets/posts/drawing-parallel-edges-in-qt/Midpoint_Line.png)<br><br>
+
+## Final comments
+
+And that is it. The code snippets above contain the most essential ingredients for drawing curved edges within the Qt Framework. Indeed, there is plenty of stuff that goes on around this that needs to be implemented for all of this to work. Later this year, the source code for Q-SoPrA will be open, which gives you the opportunity to examine the code in more detail.
 
 
 [1]: {{ site.baseurl }}{%post_url 2018-02-21-relationships-in-qsopra %}
@@ -252,3 +209,6 @@ We also have to make sure that that arrowhead that we attach to the curve follow
 [20]: https://stackoverflow.com/questions/50129580/program-to-find-line-segment-and-bezier-curve-intersection
 [21]: http://doc.qt.io/qt-5/qpainter.html
 [22]: http://doc.qt.io/qt-5/qpainter.html#rotate
+[23]: http://doc.qt.io/archives/qt-4.8/qpainter.html#rotate
+[24]: http://doc.qt.io/qt-5/qgraphicsitem.html#boundingRect
+[25]: http://doc.qt.io/qt-5/qgraphicsitem.html#shape
