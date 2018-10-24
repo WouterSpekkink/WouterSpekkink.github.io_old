@@ -277,9 +277,10 @@ Another challenge we are likely to encounter when reading 'messy' csv files is t
 
 ``` text
 timing,description,raw,comments,source
-1,test1,Let’s make this example,,s1
-2,test2,"If there is one thing I hate, it is a single "" What about you?",,s2
-3,test3,"""Nothing interesting really happened"", said Toby the magic purple elephant.",,"s3,"
+1,test1,"Let’s make this example",,"s1"
+2,test2,"If there is one thing I hate, it is a single "" What about you?",,"s2"
+3,test3,"""Nothing interesting really happened"", said Toby the magic purple elephant.",,"s3"
+4,test4,"What about commas, huh?",,"s4"
 ```
 In the second line below the header, you'll find a text cell with a single embedded double quote. As you can see, it is represented by two double quotes rather than one. In the second to last line of data, we find an example of someone being quoted. In the last line we find an embedded comma. For a simple csv parser, these are all quite challenging cases to deal with appropriately, especially if we find them in some combination. 
 
@@ -387,7 +388,7 @@ So, what happens once we read the last version of our example csv file, focusing
 
 Let's consider the second to last line of data next. After two columns, we hit the three consecutive double quotes. The first of these sets the `inTextField` bool to true. The two other double quotes don't do anything but increment the `quoteCount` object, since the first of them is followed by another double quote, and since the second of them brings `quoteCount` to 3, an unequal number. We continue to the two double quotes after the word "happened", which again do nothing, since the first is followed by another double quote, and since the second brings `quoteCount` to an unequal number (5). The last double quote is encountered after "elephant.". This one brings `quoteCount` to a total of 6 for this line, and since it is not followed by another double quote, the function decides that we have finished reading the current text field. 
 
-Now, let's discuss the last line of data in the file. This case is quite simple. Once we encounter the first double quote, `inTextField` is set to true, and therefore the comma we encounter after the word "Commas" is ignored. After we encounter the second double quote, we set `inTextField` to false again, and the commas that we encounter in the remainder of the line are handled as delimiting commas. 
+Now, let's discuss the last line of data in the file. This case is quite simple. Once we encounter the first double quote, `inTextField` is set to true, and therefore the comma we encounter after the word "commas" is ignored. After we encounter the second double quote, we set `inTextField` to false again, and the commas that we encounter in the remainder of the line are handled as delimiting commas. 
 
 Thus, the problematic cases we discussed earlier are handled quite well. In fact, I am still quite surprised myself how flexible this set of functions is with messy data.
 
