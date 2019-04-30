@@ -9,7 +9,7 @@ order: 4
 
 I am an amateur coder, currently working mostly with C++, and making heavy use of the Qt library for GUI functions, interfacing with Sql databases, and drawing graphics (you might say that I code in Qt rather than C++). Occasionally, I also write scripts for R (usually for quick work on data tables or matrices), and I have done very few things in Java (primarily writing plugins for [Gephi][1]) and Python. 
 
-In the past, I used to share downloads for some of the software that I wrote via my website, but I decided to switch from WordPress to Github Pages (the page you are currently looking at), and to share software directly from the Github repositories. 
+In the past, I used to share downloads for some of the software that I wrote via my website, but I decided to switch from WordPress to Github Pages (the website you are currently looking at), and to share software directly from the Github repositories. 
 
 On this page, I either share links to the downloads attached to my Github repositories, or I share links to project pages for larger projects, such as Q-SoPrA. For the plugins I created for [Gephi][1], you'll have to use the Plugins menu of Gephi itself. 
 
