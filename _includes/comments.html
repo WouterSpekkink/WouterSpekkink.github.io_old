@@ -1,7 +1,7 @@
 <div class="js-comments">
   <h1 class="comments-title">Comments</h1>
   {% assign comments = site.data.comments | sort %}
-  {% for comment in comments reversed %}
+  {% for comment in comments %}
   {% assign commentData = comment[1] %}
   {% if commentData.id == page.id %}
   <article class="comment mdl-card mdl-shadow--2dp">
