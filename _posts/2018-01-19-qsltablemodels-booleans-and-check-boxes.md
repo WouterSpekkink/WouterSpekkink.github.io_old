@@ -27,7 +27,7 @@ In the below, I briefly outline how you could achieve a result like the one show
 </details><br>
 
 ## An assumption about your 'pretend boolean' variable
-In the below I make one main assumption about your 'pretend boolean' variable, which is that this variable is stored in one of the tables of your sql database as an integer, and that you programmatically set this integer to `0` or `1` whenever necessary. I tend to use the [QSqlQuery][7] class for this, but as Doug Forester pointed out in the comment section below, this is a bit inefficient. Instead, it is enough to subclass the [QSqlTableModel][5] and re-implement some of its functions is discussed further below.
+In the below I make one main assumption about your 'pretend boolean' variable, which is that this variable is stored in one of the tables of your sql database as an integer, and that you programmatically set this integer to `0` or `1` whenever necessary. I tend to use the [QSqlQuery][7] class for this, but as Doug Forester pointed out in the comment section below, this is a bit inefficient. Instead, it is enough to subclass the [QSqlTableModel][5] and re-implement some of its functions as discussed further below.
 
 Before showing how this works, I should add that in the particular use case discussed here, the pretend boolean is stored in a particular column of the sql table that my [QSqlTableModel][5] interfaces with. In the code snippets below you will regularly see a conditional that checks if the current column index is `7`, because that is the column that holds the 'pretend boolean' in my specific example. You would of course need to adapt this column index to your own specific use case.
 
