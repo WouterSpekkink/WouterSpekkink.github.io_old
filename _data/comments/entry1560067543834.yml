@@ -1,0 +1,8 @@
+_id: 611ad100-8a8d-11e9-99f3-bbbd6ce5252c
+id: >-
+  /software/q-sopra/technical/c++/qt/2018/01/19/qsltablemodels-booleans-and-check-boxes
+name: Wouter Spekkink
+email: cdec69ebb0ebce28f8d5f93a0a1791a3
+url: ''
+message: "Hi Doug, thanks for the comment!\r\n\r\nI should probably contextualize the problem a bit by saying that the order variable serves more important purposes elsewhere in the program. In other words, the problem I discuss in this post was not the reason why the order variable exists, and the variable plays a more explicit and important role elsewhere. \r\n\r\nThat being said, you are right that it is unnecessary to use the variable in the data() function, and your solution saves us the trouble of having to do a query. I honestly didn't know you could evaluate an integer as a boolean in C++. Thanks for the advice!"
+date: 1560067543
