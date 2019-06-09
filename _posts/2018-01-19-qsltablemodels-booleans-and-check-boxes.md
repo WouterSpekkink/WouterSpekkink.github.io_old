@@ -27,71 +27,12 @@ In the below, I briefly outline how you could achieve a result like the one show
 </details><br>
 
 ## An assumption about your 'pretend boolean' variable
-In the below I make one main assumption about your 'pretend boolean' variable, which is that this variable is stored in one of the tables of your sql database as an integer, and that you programmatically set this integer to `0` or `1` whenever necessary. 
+In the below I make one main assumption about your 'pretend boolean' variable, which is that this variable is stored in one of the tables of your sql database as an integer, and that you programmatically set this integer to `0` or `1` whenever necessary. I tend to use the [QSqlQuery][7] class for this, but as Doug Forester pointed out in the comment section below, this is a bit inefficient. Instead, it is enough to subclass the [QSqlTableModel][5] and re-implement some of its functions is discussed further below.
 
-There are of course multiple ways to achieve this. I tend to use the [QSqlQuery][7] class for reading and writing interactions with sql databases. Basically, this class allows you to write and execute an sql query like you normally would. In the snippet below, I have included a fictional example where I set our 'pretend boolean' variable to `0` or `1` depending on some conditional.
-
-{% highlight c++ %}
-/*
-  Assume that we have a column in our sql table in which we store a variable
-  that corresponds to the sorting order of the table's rows. 
-  We call this variable "order", and we set the lowest value of this variable
-  to be 1. 
-  If we consistently sort the sql table based on this variable, its value
-  will always be the row number of the corresponding entry + 1.
-*/
-int order = tableView->currentIndex().row() + 1; 
-/* 
-  We have a 'pretend boolean' variable that is called "mark". This is an integer
-  that is set either to "0" or to "1".
-  Now assume that we have some conditional that determines what state should be
-  recorded for "mark". We initialise "mark" as "0", and change its value to "1" 
-  if our condition holds true.
-*/
-int mark = 0;
-if (myCondition == true) {
-   mark = 1;
-}
-// Then we create an QSqlQuery object to record the result in our sql table.
-QSqlQuery *query = new QSqlQuery; 
-/* 
-  In our sql table, the order variable is recorded in a column called "ch_order".
-  There is a good reason for this: order is also a key word in sql query language,
-  so it cannot be used as a name for table columns.
-*/
-query->prepare("UPDATE myTable SET mark = :mark, WHERE ch_order = :order");
-// We need to bind our order variable to the query.
-query->bindValue(":order", order); 
-// And then we can execute it. This will write the data to the table.
-query->exec();
-// Memory management 
-delete query; 
-
-{% endhighlight %}
-
-Reading the state of our 'pretend boolean' can also be done with an [QSqlQuery][7] object. Say that we want to read the state of this variable for all rows of our sql table. The following snippet would achieve something like that.
-
-{% highlight c++ %}
-// We create our QSqlQuery object.
-QSqlQuery *query = new QSqlQuery;
-// No need to bind values to our query in this case, so we can immediately execute.
-query->exec("SELECT mark FROM myTable");
-/*
-  The results are now stored in the query object, 
-  and we can use the next() method to iterate through the results.
-*/
-while (query->next()) {
-  // The query->value() method returns a QVariant, so we need to convert it to an integer.
-  int currentMark = query->value(0).toInt();
-  // Do something with the variable. In this case we just write it to the console output.
-  qDebug() << currentMark;
-}
-delete query; 
-// Memory management
-{% endhighlight %}
+Before showing how this works, I should add that in the particular use case discussed here, the pretend boolean is stored in a particular column of the sql table that my [QSqlTableModel][5] interfaces with. In the code snippets below you will regularly see a conditional that checks if the current column index is `7`, because that is the column that holds the 'pretend boolean' in my specific example. You would of course need to adapt this column index to your own specific use case.
 
 ## Sub-classing QSqlTableModel
-Now, if we want user interaction with our 'pretend boolean' variable to be handled by a check box, we need to sub-class the [QSqlTableModel][5] that interfaces between the sql table and the [QTableView][9] that visualises the data for the user. More specifically, we need to re-implement the `flags()`, `data()` and `setData()` member functions, and make our 'pretend boolean' (an integer set to `0` or `1`) behave as an item that can be checked and unchecked (I believe it was [this discussion][11] that led me to this insight). The [flags()][18] function basically determines how items recorded in the [QSqlTableModel][5] can be manipulated (see [this list][19] of possible flags). We want to re-implement this function to make sure that items that correspond to our 'pretend boolean' can be checked or unchecked by the user. This can be achieved quite easily:
+If we want user interaction with our 'pretend boolean' variable to be handled by a check box, we need to sub-class the [QSqlTableModel][5] that interfaces between the sql table and the [QTableView][9] that visualises the data for the user. More specifically, we need to re-implement the `flags()`, `data()` and `setData()` member functions, and make our 'pretend boolean' (an integer set to `0` or `1`) behave as an item that can be checked and unchecked (I believe it was [this discussion][11] that led me to this insight). The [flags()][18] function basically determines how items recorded in the [QSqlTableModel][5] can be manipulated (see [this list][19] of possible flags). We want to re-implement this function to make sure that items that correspond to our 'pretend boolean' can be checked or unchecked by the user. This can be achieved quite easily:
 
 {% highlight c++ %}
 /* 
@@ -110,7 +51,7 @@ Qt::ItemFlags EventTableModel::flags(const QModelIndex & index) const {
 }
 {% endhighlight %}
 
-In the code snippet above, we make the assumption that our 'pretend boolean' is always recorded in the seventh column of our sql table. This may of course be different in your case. All we do is to check whether the current index being accessed exists in the seventh column. If yes, then we communicate to the program that the item at this index should be checkable by the user (we also make sure that we return all flags that are set by default). If no, then we revert to the default behaviour of the `QSqlTableModel::flags()` member function. 
+As mentioned previously, in the code snippet above we assume that our 'pretend boolean' is recorded in the seventh column of our sql table. We therefore check whether the current index being accessed exists in the seventh column. If yes, then we communicate to the program that the item at this index should be checkable by the user (we also make sure that we return all flags that are set by default). If no, then we revert to the default behaviour of the `QSqlTableModel::flags()` member function. 
 
 Our sub-classed version of [QSqlTableModel][5] still won't understand how to handle our 'pretend boolean' properly. For that, we also need to re-implement the `data()` and `setData()` functions. The [data()][12] and [setData()][13] are used to read data from, and write data to the sql table with which the QSqlTableModel is interfacing. 
 
@@ -123,18 +64,16 @@ Another thing we should keep in mind is that we don't want *all* data in our sql
 Let's start with our `data()` function. See a snippet with its re-implemented version below. **EDIT: The updated version below implements a suggestion made by Doug Forester in the comments. It is more efficient than what I originally came up with.**
 
 {% highlight c++ %}
-
 QVariant EventTableModel::data(const QModelIndex &index, int role) const 
 {
   if (index.column() == 7) 
     { // This is always the column with the boolean variable
       if (role == Qt::CheckStateRole) 
 	{ // Only do the below when we are setting the checkbox.
-	  // We can simply grab the current checkstate from the data model.
-	  QModelIndex cbIndex = index.sibling(index.row(), 7);
-	  int checked = QSqlTableModel::data(cbIndex).toInt();
+	  // We can simply fetch the value from the current index
+	  int checked = QSqlTableModel::data(index).toInt();
 	  // If checked == 1, then it evaluates to true in the if-statement below.
-	  // The statement evaluates to false if checked == 0.
+	  // If checked == 0, the statement evaluates to false.
 	  if (checked)
 	    {
 	      return Qt::Checked;
@@ -181,14 +120,13 @@ QVariant EventTableModel::data(const QModelIndex &index, int role) const
 }
 {% endhighlight %}
 
-So, the basic structure of this function is quite simple. We first check if the column of the sql table that is being accessed is the column with our `pretend boolean`. If yes, then we check whether the data are being accessed under the 'Qt::CheckStateRole'. If the answer is yes again, we can fetch the current value of our 'pretend boolean' by accessing the data stored in the corresponding column, and we store this value in `int checked`. The function will return `Qt::Checked` if `checked == 1`, and it will return `0` if `checked==0`.
+So, the basic structure of this function is quite simple. We first check if the column of the sql table that is being accessed is the column with our `pretend boolean`. If yes, then we check whether the data are being accessed under the 'Qt::CheckStateRole'. If the answer is yes again, we can fetch the current value of our 'pretend boolean' by accessing the data stored in the current index, and we store this value in `int checked`. The function will return `Qt::Checked` if `checked == 1`, and it will return `0` if `checked==0`.
 
 There are a few other situations that the re-implemented function handles. If we are accessing data in the column with our `pretend boolean`, but we are not accessing the data under the `Qt::CheckState` role, then the function simply returns an empty QVariant(), effectively returning nothing. I did this to make sure that the corresponding column in the [QTableView][9] only shows a check box that visualises the current check state, and nothing else. If we are accessing data in any other column, the function first checks whether we are accessing data under the `Qt::ToolTipRole`. If yes, then we treat it as another special case, in which the user gets shown a tool tip that simply contains the visible contents of the cell currently being hovered over with the mouse cursor. If we are not accessing the data under the `Qt::ToolTipRole` (in all other cases), we just revert to the default implementation of the `QSqlTableModel::data()` function. 
 
 If you have re-implemented the `data()` function in this way, then your [QTableView][9] should already show check boxes in the corresponding column. So far, so good. However, there are still a few problems. One problem is that the check boxes are aligned to the extreme left of the column, which makes the table look ugly. We will deal with this later. A more urgent problem is that checking / unchecking the check boxes won't actually do anything meaningful with the underlying data, unless we also re-implement the `setData()` function. Let's do that next.
 
 {% highlight c++ %}
-
 bool EventTableModel::setData(const QModelIndex & index,
 			      const QVariant & value, int role) 
 {
@@ -202,35 +140,22 @@ bool EventTableModel::setData(const QModelIndex & index,
       // Writing the data when the check box is set to checked.
       if (value == Qt::Checked) 
 	{
-	  QSqlQuery *query = new QSqlQuery;
-	  int order = index.row() + 1;
-	  query->prepare("UPDATE incidents SET mark = 1 WHERE ch_order = :order");
-	  query->bindValue(":order", order);
-	  query->exec();
-	  delete query;
-	  // We also need to write the change to our data model
+	  // Let's write the new value
 	  return setData(index, 1);
 	  // Writing the data when the check box is set to unchecked
 	}
       else if (value == Qt::Unchecked) 
 	{
-	  QSqlQuery *query = new QSqlQuery;
-	  int order = index.row() + 1;
-	  query->prepare("UPDATE incidents SET mark = 0 WHERE ch_order = :order");
-	  query->bindValue(":order", order);
-	  query->exec();
-	  delete query;
-	  // We also need to write the change to our data model.
+	  // Let's write the new value
 	  return setData(index, 0);
 	}
     }
   // In all other situations revert to default behaviour.
   return QSqlTableModel::setData(index, value, role);
 }
-
 {% endhighlight %}
 
-We have a similar kind of check to the one we had with the `data()` function: We check whether thes column we are writing to is the column that contains our `pretend boolean` variable. In this case, we check at the same time whether we are trying to write data under the `Qt::CheckStateRole`. If yes, we check whether the corresponding check box was set to checked or to unchecked, and write a `1` to the sql table in the first case, or a `0` in the latter. In all other situations we simply refer to the default implementation of the `QSqlTableModel::setData()` function.
+We have a similar kind of check to the one we had with the `data()` function: We check whether thes column we are writing to is the column that contains our `pretend boolean` variable. In this case, we check at the same time whether we are trying to write data under the `Qt::CheckStateRole`. If yes, we write either a `1` or a `0` to the corresponding index, depending on what value was passed to the function. In all other situations we simply refer to the default implementation of the `QSqlTableModel::setData()` function.
 
 After re-implementing the `data()` function this way, checking / unchecking the check boxes in our [QTableView][9] will actually do something meaningful with the data in the underlying sql table. 
 
