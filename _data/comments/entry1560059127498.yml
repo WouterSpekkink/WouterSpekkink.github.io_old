@@ -1,0 +1,8 @@
+_id: c892f1a0-8a79-11e9-bf21-31765d156759
+id: >-
+  /software/q-sopra/technical/c++/qt/2018/01/19/qsltablemodels-booleans-and-check-boxes
+name: Doug Forester
+email: a0d497d8e2ce26adeed58fe199254bd4
+url: ''
+message: "Suggest for getting the value of the checkbox field corresponding to the record:\r\n\r\nQModelIndex cbIndex = index.siblingAtColumn(m_lib->field_lib_checkbox);\r\nint checked = data(cbIndex).toInt();\r\nif (checked)\r\n  return Qt::Checked;\r\nelse\r\n  return Qt::Unchecked;\r\n\r\nYou can eliminate the need for the \"funny\" need to have an \"order\" field."
+date: 1560059127
