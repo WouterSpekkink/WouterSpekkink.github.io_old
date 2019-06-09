@@ -134,6 +134,7 @@ QVariant EventTableModel::data(const QModelIndex &index, int role) const
 	  QModelIndex cbIndex = index.sibling(index.row(), 7);
 	  int checked = QSqlTableModel::data(cbIndex).toInt();
 	  // If checked == 1, then it evaluates to true in the if-statement below.
+	  // The statement evaluates to false if checked == 0.
 	  if (checked)
 	    {
 	      return Qt::Checked;
