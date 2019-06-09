@@ -120,52 +120,67 @@ Another thing we should keep in mind is that we don't want *all* data in our sql
 
 <blockquote>Actually, in the example below we have one other exception, which is the special case in which the user is hovering the mouse cursor over a cell, which will cause the QSqlTableModel to return data under the Qt::ToolTipRole.</blockquote>
 
-Let's start with our `data()` function. See a snippet with its re-implemented version below.
+Let's start with our `data()` function. See a snippet with its re-implemented version below. **EDIT: The updated version below implements a suggestion made by Doug Forester in the comments. It is more efficient than what I originally came up with.**
 
 {% highlight c++ %}
-QVariant EventTableModel::data(const QModelIndex &index, int role) const {
-  if (index.column() == 7) { // This is always the column with the boolean variable
-    if (role == Qt::CheckStateRole) { // Only do the below when we are setting the checkbox.
-      // We want to fetch the state of the boolean from the sql table.
-      QSqlQuery *query = new QSqlQuery;
-      int order = index.row() + 1;
-      query->prepare("SELECT mark FROM incidents WHERE ch_order = :order");
-      query->bindValue(":order", order);
-      query->exec();
-      query->first();
-      int mark = query->value(0).toInt();
-      // Return the appropriate check state based on the state of mark.
-      if (mark == 1) {
-	return Qt::Checked;
-      } else if (mark == 0) {
-	return Qt::Unchecked;
-      }
-    } else {
-      /*
-	We return an empty variant in all other cases. This is to prevent, for example,
-	that we also see a '0' or '1' in the same column.
-      */
-      return QVariant();
+
+QVariant EventTableModel::data(const QModelIndex &index, int role) const 
+{
+  if (index.column() == 7) 
+    { // This is always the column with the boolean variable
+      if (role == Qt::CheckStateRole) 
+	{ // Only do the below when we are setting the checkbox.
+	  // We can simply grab the current checkstate from the data model.
+	  QModelIndex cbIndex = index.sibling(index.row(), 7);
+	  int checked = QSqlTableModel::data(cbIndex).toInt();
+	  // If checked == 1, then it evaluates to true in the if-statement below.
+	  if (checked)
+	    {
+	      return Qt::Checked;
+	    }
+	  else
+	    {
+	      return Qt::Unchecked;
+	    }
+	}
+      else 
+	{
+	  /*
+	    We return an empty variant in all other cases. This is to prevent, for example,
+	    that we also see a '0' or '1' in the same column.
+	  */
+	  return QVariant();
+	}
+      // Only do the below if we want to fetch a tool tip.
     }
-    // Only do the below if we want to fetch a tool tip.
-  } else if (role == Qt::ToolTipRole) {
-    // I just want the tool tip to show the data in the column.
-    const QString original = QSqlTableModel::data(index, Qt::DisplayRole).toString();
-    QString toolTip = breakString(original); // breakString() breaks the text into smaller lines.
-    return toolTip;
-  } else {
-    /* 
-       In all other cases, we want the default behaviour of this function. 
-       This can be done easily by returning the default version of the function,
-       rather than the re-implemented version we have here.
-    */
-    return QSqlTableModel::data(index, role);
-  }
+  else if (role == Qt::ToolTipRole) 
+    {
+      // I just want the tool tip to show the data in the column.
+      const QString original = QSqlTableModel::data(index, Qt::DisplayRole).toString();
+      QString toolTip = breakString(original); // breakString() breaks the text in smaller lines.
+      return toolTip;
+      // I want to make sure that broken lines have a space between them.
+    }
+  else if (role == Qt::DisplayRole) 
+    {
+      const QString original = QSqlTableModel::data(index, Qt::DisplayRole).toString();
+      QString shownText = fixBreakLines(original);
+      return shownText;
+    }
+  else 
+    {
+      /* 
+	 In all other cases, we want the default behaviour of this function. 
+	 This can be done easily by returning the default version of the function,
+	 rather than the re-implemented version we have here.
+      */
+      return QSqlTableModel::data(index, role);
+    }
   return QVariant(); // This prevents a compiler warning.
 }
 {% endhighlight %}
 
-So, the basic structure of this function is quite simple. We first check if the column of the sql table that is being accessed is the column with our `pretend boolean`. If yes, then we check whether the data are being accessed under the 'Qt::CheckStateRole'. If the answer is yes again, we run a block of code that reads the current value of `mark` in the sql table (which can be `0` or `1`, assuming that we have been consistent in our implementation of the interaction with this column of the sql table), and then returns the value `Qt::Checked` if the value read is `1`, or returns the value `Qt::Unchecked` if the value read is `0`. 
+So, the basic structure of this function is quite simple. We first check if the column of the sql table that is being accessed is the column with our `pretend boolean`. If yes, then we check whether the data are being accessed under the 'Qt::CheckStateRole'. If the answer is yes again, we can fetch the current value of our 'pretend boolean' by accessing the data stored in the corresponding column, and we store this value in `int checked`. The function will return `Qt::Checked` if `checked == 1`, and it will return `0` if `checked==0`.
 
 There are a few other situations that the re-implemented function handles. If we are accessing data in the column with our `pretend boolean`, but we are not accessing the data under the `Qt::CheckState` role, then the function simply returns an empty QVariant(), effectively returning nothing. I did this to make sure that the corresponding column in the [QTableView][9] only shows a check box that visualises the current check state, and nothing else. If we are accessing data in any other column, the function first checks whether we are accessing data under the `Qt::ToolTipRole`. If yes, then we treat it as another special case, in which the user gets shown a tool tip that simply contains the visible contents of the cell currently being hovered over with the mouse cursor. If we are not accessing the data under the `Qt::ToolTipRole` (in all other cases), we just revert to the default implementation of the `QSqlTableModel::data()` function. 
 
@@ -174,33 +189,40 @@ If you have re-implemented the `data()` function in this way, then your [QTableV
 {% highlight c++ %}
 
 bool EventTableModel::setData(const QModelIndex & index,
-			      const QVariant & value, int role) {
+			      const QVariant & value, int role) 
+{
   /* 
      Let's check whether the selected column is the column with our boolean variable
      (always column 7), and whether we are trying to set data under the 
      Qt::CheckStateRole.
   */
-  if (index.column() == 7 && role == Qt::CheckStateRole) {
-    // Writing the data when the check box is set to checked.
-    if (value == Qt::Checked) {
-      QSqlQuery *query = new QSqlQuery;
-      int order = index.row() + 1;
-      query->prepare("UPDATE incidents SET mark = 1 WHERE ch_order = :order");
-      query->bindValue(":order", order);
-      query->exec();
-      delete query;
-      return true;
-      // Writing the data when the check box is set to unchecked
-    } else if (value == Qt::Unchecked) {
-      QSqlQuery *query = new QSqlQuery;
-      int order = index.row() + 1;
-      query->prepare("UPDATE incidents SET mark = 0 WHERE ch_order = :order");
-      query->bindValue(":order", order);
-      query->exec();
-      delete query;
-      return true;
+  if (index.column() == 7 && role == Qt::CheckStateRole) 
+    {
+      // Writing the data when the check box is set to checked.
+      if (value == Qt::Checked) 
+	{
+	  QSqlQuery *query = new QSqlQuery;
+	  int order = index.row() + 1;
+	  query->prepare("UPDATE incidents SET mark = 1 WHERE ch_order = :order");
+	  query->bindValue(":order", order);
+	  query->exec();
+	  delete query;
+	  // We also need to write the change to our data model
+	  return setData(index, 1);
+	  // Writing the data when the check box is set to unchecked
+	}
+      else if (value == Qt::Unchecked) 
+	{
+	  QSqlQuery *query = new QSqlQuery;
+	  int order = index.row() + 1;
+	  query->prepare("UPDATE incidents SET mark = 0 WHERE ch_order = :order");
+	  query->bindValue(":order", order);
+	  query->exec();
+	  delete query;
+	  // We also need to write the change to our data model.
+	  return setData(index, 0);
+	}
     }
-  }
   // In all other situations revert to default behaviour.
   return QSqlTableModel::setData(index, value, role);
 }
