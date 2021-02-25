@@ -42,6 +42,3 @@ plugins_dir:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
-
-# Staticman
-staticmanUrl: https://api.staticman.net/v2/entry/wouterspekkink/wouterspekkink.github.io/master/comments
