@@ -59,7 +59,7 @@ As you can see, we are passing pointers to objects of the `NetworkNode` class to
 
 As I mentioned before, we actually want our line to stop shortly before it reaches its end point. What we could do is to create a [`QLineF` object][15], passing our start and end points as parameters, and then use the `setLength()` function to make the line slightly shorter: `myLine.setLength(myLine.length() - 18)`. 
 
-Then we still need to add our arrowhead. For this, I simply followed the [Diagram Scene Example][7] provide in the online documentation for Qt. Basically, this involves creating a [`QPolygonF`][16] object with the shape of our arrowhead, and have this object drawn near the end point of our line. 
+Then we still need to add our arrowhead. For this, I simply followed the [Diagram Scene Example][7] provided in the online documentation for Qt. Basically, this involves creating a [`QPolygonF`][16] object with the shape of our arrowhead, and have this object drawn near the end point of our line. 
 
 We should do most of the above in the ['paint()' function][12] of our edge, because that is the function where we determine where and how the edge is drawn. I have included a code snippet below to illustrate what our `paint()` function might look like in this scenario.
 
@@ -88,7 +88,7 @@ void DirectedEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QW
 }
 {% endhighlight %}
 
-And that should do the trick. At least, if we were only interested in drawing edges as straight lines. However, what if we want to draw parallel edges, that is, multiple edges between the same pair of nodes? In this case, if we would just use straight lines, then the edges would overlap, and we would actually not be able to see that multiple edges exist between our nodes. In this case, it is better to draw edges as curved lines, and to change the strength of the curve for each additional edge that we add to a given pair of nodes. The remained of this post will be about how we can do this, and what challenges we will face.
+And that should do the trick. At least, if we were only interested in drawing edges as straight lines. However, what if we want to draw parallel edges, that is, multiple edges between the same pair of nodes? In this case, if we would just use straight lines, then the edges would overlap, and we would actually not be able to see that multiple edges exist between our nodes. In this case, it is better to draw edges as curved lines, and to change the strength of the curve for each additional edge that we add to a given pair of nodes. The remainder of this post will be about how we can do this, and what challenges we will face.
 
 ## Drawing parallel edges
 
