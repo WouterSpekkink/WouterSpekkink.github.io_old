@@ -19,7 +19,7 @@ At this point, some of you might already wonder how we can decide the number of 
 ## Our example of today
 The example that I will be using is a bit silly, but it serves quite well to show how powerful MDS can be at creating spaces that accurately reflect the distances that you feed into the analysis. For this example, I have taken 12 cities in the Netherlands, and I looked up the distances between all of them. To find the distances, I used [this website][5] (thank you, Google). See the distance matrix that I produced below (some of the larger pictures in this post may be easier to read if you click on them).
 
-<br><br>[![Distance matrix](/assets/posts/simple-example-mds/Screen_0.png){: .center-image}](/assets/posts/simple-example-mds/Screen_0.png)<br><br>b
+<br><br>[![Distance matrix](/assets/posts/simple-example-mds/Screen_0.png){: .center-image}](/assets/posts/simple-example-mds/Screen_0.png)<br><br>
 
 There is no particular reason why I picked these cities, except for the fact that they are spread out quite nicely throughout the Netherlands. I already know that it will be very easy to represent these distances in a 2-dimensional space, because that is what we do all the time with geographical maps. So the results will not be very surprising, but I still think the results are cool enough.
 
