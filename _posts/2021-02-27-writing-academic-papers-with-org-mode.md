@@ -3,7 +3,7 @@ layout: post
 title: "Writing academic papers with org-mode"
 date: 2021-02-27 15:43 +0000
 categories: Academia Writing Tool Doom-emacs
-tags: Academia, Writing, Tools, Doom emacs
+tags: Academia Writing Tools Doom-emacs
 ---
 
 ## Adding to what is already out there
