@@ -681,7 +681,7 @@ See my basic org-roam config below.
            :head "#+title: %<%Y-%m-%d>\n\n")))
 {% endhighlight %}
   
-What I do here is to first point to my org-roam directory, which is a folder without any sub-folders where I keep all my notes (including the ones made with org-noter).
+What I do here is to first point to my org-roam directory, which is a folder without any sub-folders (except for one subfolder in which I keep my 'daily' notes, which are structured more like a journal) where I keep all my notes (including the ones made with org-noter).
 I make sure that org-roam runs on emacs startup, and then I define two kinds of templates.
 These templates define the names of the files to keep your notes in, as well as the basic contents of these files.
 
