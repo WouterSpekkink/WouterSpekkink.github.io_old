@@ -160,8 +160,7 @@ Some of you might think: "What's the point?
 What benefit does this give you over Microsoft Word or LibreOffice Writer, in which you can do most of these things?"
 You might also think that plain text looks ugly (I don't; I've come to love it) and you'd rather see what you get, as you do in Microsoft Word, rather than first having to export to some other format before you see what it'll eventually look like.
 
-Yes, if you are more interested in a what-you-see-is-what-you-get-editor (a phrase I borrow from Luke Smith, whose Youtube videos on Linux have taught me a lot), then writing in org-mode probably isn't for you.
-But know that there are certain benefits to working in a plain text format like the org format.
+Know that there are certain benefits to working in a plain text format like the org format.
 First, it makes version control much easier.
 For example, I use Github for version control, which means that after each time I that I add bits and pieces to a paper (usually at the end of the day), I push a commit to github.
 This allows me to keep track of all the changes I make between versions, without having to explicitly save a new version of my document whenever I want to make a new version, and without the risk of accidentally overwriting changes that I might later regret. 
