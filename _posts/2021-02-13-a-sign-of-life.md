@@ -65,4 +65,4 @@ Okay, this was a short one, but my main purpose was to make a start again, and d
 
 [1]: {{ site.url }}/assets/documents/rka_rapport.pdf 
 [2]: {{ site.baseurl }}{%post_url 2018-01-25-attributes-in-qsopra %}
-[3]: {{ site.baseurl }}{%post_url 2017-12-28-getting-started-with-qsopra %}
+[3]: {{ site.baseurl }}{%post_url 2017-12-26-getting-started-with-qsopra %}
