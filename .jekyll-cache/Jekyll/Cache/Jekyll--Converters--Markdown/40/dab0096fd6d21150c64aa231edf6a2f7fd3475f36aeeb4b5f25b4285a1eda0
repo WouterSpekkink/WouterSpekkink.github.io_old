@@ -1,0 +1,11 @@
+I"¦<h2 id="edit-2021-08-10">EDIT (2021-08-10)</h2>
+<p>After upgrading my Doom emacs installation today, I noticed that org-roam-bibtex was broken. 
+This has to do with the fact that org-roam-bibtex has recently switched over to org-roam V2, which has been in development for a while now and was <a href="https://blog.jethro.dev/posts/org_roam_v2/">released in July</a>. 
+Doom emacs now also supports org-roam V2 and <a href="https://github.com/hlissner/doom-emacs/tree/develop/modules/lang/org#should-i-go-with-roam-v1-or-roam2-v2">one of the gibub pages</a> for Doom emacs describes how you can make the switch.
+You have the option to stick with org-roam V1, but that version is no longer actively maintained. 
+Making the switch to org-roam V2 basically involves changing a flag in your init.el file from <code class="language-plaintext highlighter-rouge">+roam</code> to <code class="language-plaintext highlighter-rouge">+roam2</code>.
+However, for org-roam-bibtex to work, you will need to make additional changes to your config (the config.el file).
+It is a good idea to check the new README at <a href="https://github.com/org-roam/org-roam-bibtex">the org-roam-bibtex repository</a>, as well as <a href="https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org">the manual</a>. 
+One of the more important changes is that org-roam-bibtex now uses an org-roam-capture template, instead of using its own capture templates.</p>
+
+:ET

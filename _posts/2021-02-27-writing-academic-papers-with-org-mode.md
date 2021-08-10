@@ -6,6 +6,27 @@ categories: Academia Writing Tool Doom-emacs
 tags: Academia Writing Tools Doom-emacs
 ---
 
+## EDIT (2021-08-10)
+After upgrading my Doom emacs installation today, I noticed that org-roam-bibtex was broken. 
+This has to do with the fact that org-roam-bibtex has recently switched over to org-roam V2, which has been in development for a while now and was [released in July][31]. 
+Doom emacs now also supports org-roam V2 and [one of the gibub pages][32] for Doom emacs describes how you can make the switch.
+You have the option to stick with org-roam V1, but that version is no longer actively maintained. 
+Making the switch to org-roam V2 basically involves changing a flag in your init.el file from `+roam` to `+roam2`.
+However, for org-roam-bibtex to work, you will need to make additional changes to your config (the config.el file).
+It is a good idea to check the new README at [the org-roam-bibtex repository][25], as well as [the manual][33]. 
+One of the more important changes is that org-roam-bibtex now uses an org-roam-capture template, instead of using its own capture templates.
+
+You will also find that [org-roam-server][34] (a plugin that I did not discuss in the post below, but that I did occasionally use) does not work with org-roam V2. 
+However, the author of org-roam-server points to an excellent alternative, called [org-roam-ui][35].
+Make sure that you _carefully_ follow the installation instructions for Doom emacs that are provided in the [README][35] of the repository.
+
+You will find a working configuration in the doom folder of [my dotfiles][36].
+
+I also came across a blog post in which [org-cite][37] was announced.
+This is something I have not delved into yet, but when I briefly scanned the post, it seemed like org-cite is a more powerful 'org-ecosystem' citation solution. 
+I have [also read][38] that the author of the [org-ref][8] mode started porting org-ref to org-cite with [org-ref-cite][39].
+This is exciting stuff that I still need to look into.
+
 ## Adding to what is already out there
 I spent some hours in the past couple of days writing a paper on Q-SoPrA (finally), and I wanted a break from that. 
 However, I am not very good at doing nothing, so my break consists of simply writing something else; something a bit lighter.
@@ -736,3 +757,12 @@ I hope you found something useful / interesting in this post!
 [28]: https://en.wikipedia.org/wiki/Zettelkasten
 [29]: https://blog.jethro.dev/posts/how_to_take_smart_notes_org/
 [30]: https://www.youtube.com/watch?v=RvWic15iXjk
+[31]: https://blog.jethro.dev/posts/org_roam_v2/
+[32]: https://github.com/hlissner/doom-emacs/tree/develop/modules/lang/org#should-i-go-with-roam-v1-or-roam2-v2
+[33]: https://github.com/org-roam/org-roam-bibtex/blob/master/doc/orb-manual.org
+[34]: https://github.com/org-roam/org-roam-server
+[35]: https://github.com/org-roam/org-roam-ui
+[36]: https://github.com/WouterSpekkink/dotfiles
+[37]: https://blog.tecosaur.com/tmio/2021-07-31-citations.html
+[38]: https://irreal.org/blog/?p=9895
+[39]: https://github.com/jkitchin/org-ref-cite

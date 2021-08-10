@@ -1,0 +1,3 @@
+I"›<h2 id="interfacing-with-sql-databases-with-qt5">Interfacing with sql databases with Qt5</h2>
+<p>This post is on an issue that I struggled with very recently, while working on Q-SoPrA. What I wanted to achieve was relatively simple: I wanted to have tables that fetch data from sql databases, and in which one column shows check boxes to set/unset a boolean variable. The screenshot below shows an example.</p>
+:ET

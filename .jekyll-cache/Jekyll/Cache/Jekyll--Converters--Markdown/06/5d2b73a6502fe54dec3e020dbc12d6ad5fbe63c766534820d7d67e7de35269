@@ -1,0 +1,7 @@
+I"á<p>All comments are held for moderation. It may take a while before your comment appears on the web page.</p>
+
+<script>
+	document.write('<a href="' + document.referrer + '">Click here to return to the post.</a>');
+</script>
+
+:ET

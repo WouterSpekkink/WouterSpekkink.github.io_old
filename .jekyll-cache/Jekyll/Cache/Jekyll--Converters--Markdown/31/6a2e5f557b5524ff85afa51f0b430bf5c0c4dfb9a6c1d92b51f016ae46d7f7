@@ -1,0 +1,203 @@
+I"mR<h2 id="the-software-on-this-page">The software on this page</h2>
+
+<p>I am an amateur coder, currently working mostly with C++, and making heavy use of the Qt library for GUI functions, interfacing with Sql databases, and drawing graphics (you might say that I code in Qt rather than C++). Occasionally, I also write scripts for R (usually for quick work on data tables or matrices), and I have done very few things in Java (primarily writing plugins for <a href="http://www.gephi.org">Gephi</a>) and Python.</p>
+
+<p>In the past, I used to share downloads for some of the software that I wrote via my website, but I decided to switch from WordPress to Github Pages (the website you are currently looking at), and to share software directly from the Github repositories.</p>
+
+<p>On this page, I either share links to the downloads attached to my Github repositories, or I share links to project pages for larger projects, such as Q-SoPrA. For the plugins I created for <a href="http://www.gephi.org">Gephi</a>, you’ll have to use the Plugins menu of Gephi itself.</p>
+
+<h3 id="contents">Contents</h3>
+
+<ul>
+  <li><a href="#a-note-on-q-sopra">Note on Q-Sopra</a></li>
+  <li><a href="#event-graph-layout">Event Graph Layout</a></li>
+  <li><a href="#bi-dynamic-line-graphs">Bi-Dynamic Line Graphs</a></li>
+  <li><a href="#multi-dimensional-scaling-in-gephi">Multidimensional Scaling in Gephi</a></li>
+  <li><a href="#lineage-plugin-for-gephi">Lineage plugin for Gephi</a></li>
+  <li><a href="#dynamic-networks">Dynamic Networks companion to Gephi</a></li>
+  <li><a href="#csv-parser-for-gephi">Csv parser companion to Gephi</a></li>
+  <li><a href="#scripts-for-r">Scripts for R</a></li>
+</ul>
+
+<h2 id="a-note-on-q-sopra">A note on Q-SoPrA</h2>
+<p>I am currently working on an integrated software package for Qualitative analysis of Social Processes, called Q-SoPrA (<strong>Q</strong>ualitative <strong>So</strong>cial <strong>Pr</strong>ocess <strong>A</strong>nalysis). This is an open source project, written in C++, making heavy use of the Qt5 library (I won’t actually open the source until I have a more or less fully featured beta version, and when I have got a wiki up and running for Q-SoPrA). Work on Q-SoPrA is still in progress, but I am nearing a releasable version.</p>
+
+<p>Q-SoPrA will hopefully make some of the plugins I wrote for Gephi redundant, in the sense that it has built-in features for visualisation of <a href="#event-graph-layout">event graphs</a> (and much more), finding <a href="#lineage-plugin">lineages</a>, and so on. I also included options to abstract network data from event data, and visualise the resulting networks. I was also able to include some advantageous options that are currently not (yet) available in Gephi, such as the ability to visualise parallel edges, and to perform advanced multi-mode transformations on the fly (Gephi does have a plugin for multi-mode transformations, but the options built into Q-SoPrA are more advanced).</p>
+
+<p>The initial releases of Q-SoPrA won’t include any possibilities to obtain network metrics, but I do plan to implement such possibilities on the long term. For now, Q-SoPrA simply allows you to export node and edge lists, which can then be imported in other software for quantitative analysis (as the name suggests, the emphasis of Q-SoPrA is on qualitative analysis).</p>
+
+<h2 id="event-graph-layout">Event Graph Layout</h2>
+<p>The Event Graph Layout is a layout plugin for <a href="http://www.gephi.org">Gephi</a>. The layout can be used to lay out any network in which the nodes have some temporal ordering that can be expressed by their position on a horizontal axis. I created the layout plugin primarily to make it easy to create event graphs in <a href="http://www.gephi.org">Gephi</a>. In event graphs nodes are events and the edges express relationships between events. For example, an event graph could be used to visualise a sequence of social activities, where the edges express which activities occurred in response to which other activities, thus visualising interactions.</p>
+
+<h3 id="basic-instructions">Basic instructions</h3>
+<p>The Event Graph Layout plugin requires you to include an <em>order</em> variable in the node list of your graph (in Gephi’s data laboratory). The <em>order</em> variable should be of a numeric type (e.g., integer, float, double). From the layout’s menu, the <em>order</em> variable should be selected from the corresponding drop-down menu. One can then activate the plugin, which will cause the nodes to be assigned a position on the horizontal axis of the draw screen that corresponds to the value of their <em>order</em> variable. The layout plugin keeps running until you explicitly deactivate it. This allows you to drag around nodes on the vertical axis of the layout without changing their position on the horizontal axis.</p>
+
+<p>The <em>Scale of Order</em>, unsurprisingly, scales the <em>order</em> variable. By default, the <em>order</em> variable is scaled by 10, which means that the value of the <em>order</em> variable of each node is multiplied by 10 before the variable is used to determine the position of nodes on the horizontal axis. Thus, the distance between the nodes in the event graph can be changed by changing the <em>Scale of Order</em>. The appropriate <em>Scale of order</em> depends on the values of your order variable. I suggest changing the value until you find the distance that you like.</p>
+
+<p>The <em>Set Vertical Force</em> option activates a simplified force-based layout algorithm that only affects the position of nodes on the vertical axis of the layout (I based this algorithm on one of Gephi’s Force Atlas algorithms). The effect is that nodes that are more tightly interconnected will remain relatively close to each other on the vertical axis, while nodes that are more loosely connected will drift apart. This makes it easier to have a more organised layout when you have a graph with many nodes.</p>
+
+<p>The <em>Vertical Scale</em> variable determines how strong the force is that pushes unconnected nodes away from each other. The higher the value, the stronger the push. Finding appropriate values for your graphs usually requires you to play around a bit.</p>
+
+<p>The <em>Strong Gravity Mode</em> is a convenience function that sets the attracting forces (gravity) to a very high value. This typically means that all nodes end up on a straight line. This can be a good way to quickly reset your layout if nodes drifted too far apart (for example, after you set an insanely high <em>Vertical Scale</em>).</p>
+
+<p>The <em>Gravity</em> variable can be used to regulate the attracting forces between nodes. It can be useful to prevent your nodes from drifting apart too much. Creating a good looking layout usually requires you to use the <em>Gravity</em> variable in harmony with the <em>Vertical Scale</em>.</p>
+
+<p>Occasionally, you’ll create a graph where nodes are on the same position on the horizontal axis. When the <em>Vertical Force</em> is activated, these nodes may block each other when trying to change position. The <em>Jitter Tolerance</em> basically determines how much nodes are allowed to jump around when they bump into other nodes. By setting an appropriate <em>Jitter Tolerance</em>, you can make it easier for nodes in the same position on the horizontal axis to pass each other. If you set it too high, your graph will go nuts.</p>
+
+<p>The <em>Threads</em> variable sets the number of threads that your processor can use to process the layout (if you have the possibility for multi-threaded processes). This can increase performance for large graphs, although I have never really needed this option myself.</p>
+
+<p>The <em>Center</em> variable tries to keep your graph approximately in the center of the drawspace. In hindsight, I am not sure if this variable is really that useful. I never use it myself.</p>
+
+<h3 id="download-instructions">Download instructions</h3>
+<p>You can download the Event Graph Layout plugin from Gephi’s plugin menu. The source of the Event Graph Layout was merged into the <a href="https://github.com/gephi/gephi-plugins/tree/master-forge">Gephi Plugins GitHub Repository</a>, in the master-forge branch.</p>
+
+<h2 id="bi-dynamic-line-graphs">Bi-Dynamic Line Graphs</h2>
+<p>The idea to use Bi-Dynamic Line Graphs (BDLGs) to study network dynamics was introduced by Chiara Broccatelli, Martin Everett, and Johan Koskinen, in the article <a href="http://journals.sagepub.com/doi/abs/10.1177/2059799115622766"><em>Temporal dynamics in covert networks</em></a>. I think that this idea is very useful, and I wanted to have a more automated way to convert incidence matrices into BDLGs. In addition, I wanted to make it easy to import and visualise these graphs in <a href="http://www.gephi.org">Gephi</a>, since I already created the Event Graph Layout plugin (see above), which is very suitable for creating layouts for BDLGs.</p>
+
+<p>I thus created a simple tool that converts incidence matrices (imported as csv files) into BDLG matrices, and that also allows one to export the results as edge files and node files that can be imported into Gephi, and that provide everything you need to create a decent layout using the Event Graph Layout plugin. Again, all credits for the idea of BDLGs are for the authors mentioned above. I only wrote this tool.</p>
+
+<p>You can download the program using the following links:</p>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/BDLG_Matrix_Converter_Linux_V1.0.1/BDLG_Matrix_Converter_Linux_v1.0.1.tar.gz">Download for Linux</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/WouterSpekkink/BDLG_Matrix_Converter/releases/download/BDLG_Matrix_Converter_Windows_V1.0.1/BDLG_Matrix_Converter_Windows_v1.0.1.zip">Download for Windows</a></p>
+  </li>
+</ul>
+
+<p>The GitHub repository for the program can be found <a href="https://github.com/WouterSpekkink/BDLG_Matrix_Converter">here</a>.</p>
+
+<p>If you would like to use this software, then please use the following citation:</p>
+
+<p>Spekkink, W. A. H. BLDG Matrix Converter [Computer Software]. <a href="https://doi.org/10.5281/zenodo.1215462">DOI: 10.5281/zenodo.1215462</a>.</p>
+
+<p><a href="https://zenodo.org/badge/latestdoi/84478618"><img src="https://zenodo.org/badge/84478618.svg" alt="DOI" /></a></p>
+
+<h2 id="multi-dimensional-scaling-in-gephi">Multi-dimensional scaling in Gephi</h2>
+<p>I wrote two plugins for <a href="http://www.gephi.org">Gephi</a> that introduce the possibility to create layouts using Multi-Dimensional Scaling (MDS) of nodes, based on their path distances. This layout only works well with graphs that form one component, since distances between unconnected nodes are infinite, leading to somewhat awkward results.</p>
+
+<h3 id="mds-metrics">MDS metrics</h3>
+<p>The <em>MDS metrics</em> plugin calculates coordinates for the nodes in a graph based on their path distances, using the Stress Minimization algorithm included in the MDSJ library. The MDSJ library was created by Algorithmics Group of the University of Konstanz (see reference below). The MDSJ library was made available under the Creative Commons License “by-nc-sa” 3.0. The license is available at http://creativecommons.org/licenses/by-nc-sa/3.0/. I had no involvement in creating this library. I simply included it in the <em>MDS metrics</em> plugin to make use of its functionality.</p>
+
+<p>Both plugins discussed below can be downloaded from Gephi’s plugin menu. The source code for the plugins can be found in <a href="https://github.com/gephi/gephi-plugins/tree/master-forge">Gephi’s Github plugin repository</a>.</p>
+
+<h4 id="basic-instructions-1">Basic Instructions</h4>
+<p>After installing the <em>MDS metrics</em> plugin from the Gephi plugins menu, it will appear in the list of statistics algorithms. Using the plugin will open a dialog where you can:</p>
+
+<ol>
+  <li>Select the number of dimensions in which the nodes are allowed to have coordinates (of course, in Gephi you can only actually use two dimensions to create a layout).</li>
+  <li>Set how edge weights should be treated (whether or not they should be included in the determination of distances, and, if yes, whether they should be interpreted as a degree of closeness, or as a degree of distance). I have to honestly admit that this does not work very well for most graphs.</li>
+  <li>How the distances should be treated in the calculation of stress values. You can downweight large distances an upweight small ones, or weigh all distances equally. See the reference below for details.</li>
+</ol>
+
+<p>After running the algorithm with the selected settings, a dialog will appear that shows some basic results, the most important one of which is the stress of the MDS configuration (coordinate system) that the plugin converged on. Stress values can be understood to indicate the fit of the resulting configuration with the actual distances that we submitted. We will typically be looking for stress values somewhere below 0.1. Configurations that have stress values above that will not actually reflect the distances between the nodes very well. Of course, this is all a bit arbitrary, and with larger graphs we will usually have to be satisfied with somewhat larger stress values.</p>
+
+<p>The coordinates of the resulting configuration are automatically written to the node list in Gephi’s data laboratory. These coordinates can then be fed into the <em>MDS Layout</em> plugin.</p>
+
+<h4 id="reference">Reference</h4>
+<p>Algorithmics Group. MDSJ: Java Library for Multidimensional Scaling (Version 0.2). Available at http://www.inf.uni-konstanz.de/algo/software/mdsj/. University of Konstanz, 2009.</p>
+
+<h3 id="mds-layout">MDS Layout</h3>
+<p>The <em>MDS Layout</em> plugin is a very simple layout plugin that takes coordinates in two dimensions (e.g., a horizontal dimension and a vertical dimension), and then lays out nodes based on the values of their coordinates in these dimensions. I created the plugin to allow you to create a layout based on coordinates produced by the <em>MDS Metrics</em> plugin, but you can of course also use coordinates that were produced in another way.</p>
+
+<h4 id="basic-instructions-2">Basic instructions</h4>
+<p>The <em>Dimension 1</em> and <em>Dimension 2</em> drop-down menus can be used to select the dimensions of the coordinate system that you want to use for your layout. This assumes that your nodes have coordinate variables (which should be included in the node list of Gephi’s data laboratory). The <em>Network Scale</em> variable can be used to scale the graph, that is, to increase or decrease the overall size of the graph.</p>
+
+<h2 id="lineage-plugin-for-gephi">Lineage plugin for Gephi</h2>
+<p>The lineage plugin for Gephi can be used to highlight ancestors and descendants of a single node in a directed network. After downloading the plugin from Gephi’s plugin menu, it will appear in the list of statistics algorithms. When using the plugin, a dialog will appear that requires you to identify a node by typing its id into an entry field (Use the <em>id</em>, not the <em>label</em>!).</p>
+
+<p>The plugin will identify all ancestors and descendants of the selected node (we refer to this node as the origin), as well as the distance of any of these ancestors or descendants from the origin. Several variables are automatically added to the node list in the data laboratory:</p>
+
+<ul>
+  <li><strong>Lineage</strong>: A string variable that indicates for each node whether it is the <em>Origin</em>, an <em>Ancestor</em>, a <em>Descendant</em> or <em>Unrelated</em>. This can be used for easy partition colouring.</li>
+  <li><strong>IsOrigin</strong>: A boolean variable that indicates whether a node is the <em>Origin</em>.</li>
+  <li><strong>IsAncestor</strong>: A boolean variable that indicates whether a node is an <em>Ancestor</em> of the <em>Origin</em>.</li>
+  <li><strong>DistanceAncestor</strong>: An integer variable that indicates the path distance of <em>Ancestor</em> nodes from the <em>Origin</em> node. These distances are always expressed with negative values.</li>
+  <li><strong>IsDescendant</strong>: A boolean variable that indicates whether a node is a <em>Descendant</em> of the <em>Origin</em>.</li>
+  <li><strong>DistanceDescendant</strong>: An integer variable that indicates the path distance of <em>Descendant</em> nodes from the <em>Origin</em> node. These distances are always expressed with positive values.</li>
+</ul>
+
+<p>The plugin can be downloaded from Gephi’s plugin menu. The source code of the plugin can be found at the <a href="https://github.com/gephi/gephi-plugins/tree/master-forge">Github repository for plugins</a>.</p>
+
+<h2 id="dynamic-networks">Dynamic Networks</h2>
+<p>One of my first stand-alone programs. This will be made more or less obsolete with the release of Q-SoPrA, although Q-SoPrA approaches the same problems a bit differently.</p>
+
+<p>Dynamic Networks is intended as a tool to be used alongside <a href="http://www.gephi.org">Gephi</a>. The tool works with incidence matrices that are saved as csv files. The tool assumes that the columns of the matrix represent events that are put in temporal order. An example is offered below.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Event1</th>
+      <th>Event2</th>
+      <th>Event3</th>
+      <th>Event4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actor A</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>Actor B</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Actor C</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The tool can be used to convert the incidence matrix into various types of edge lists that can be imported into Gephi. For example, it is possible to take different fragments of the incidence matrix (overlapping or not), and convert this to a dynamic network that can be visualised using Gephi’s dynamic visualisation options.</p>
+
+<h3 id="downloads">Downloads</h3>
+<p>You can find download links for the binaries here:</p>
+
+<ul>
+  <li><a href="https://github.com/WouterSpekkink/DynamicNetworks/releases/download/1.0/DynamicNetworksLinux.tar.gz">Download for Linux</a></li>
+  <li><a href="https://github.com/WouterSpekkink/DynamicNetworks/releases/download/1.0/DynamicNetworks-Mac.zip)">Download for Mac OS X</a></li>
+  <li><a href="https://github.com/WouterSpekkink/DynamicNetworks/releases/download/1.0/DynamicNetworks-Windows.zip)">Download for Windows</a></li>
+</ul>
+
+<p>See <a href="https://github.com/WouterSpekkink/DynamicNetworks">this Github repository</a> for the source code and additional details.</p>
+
+<h2 id="csv-parser-for-gephi">CSV parser for Gephi</h2>
+<p>I wrote this a while ago, and it will be mostly obsolete as soon as Q-SoPrA is ready. I created this program for personal use, to convert csv-output from event sequence datasets into node and edge files that can be imported into Gephi, and that are more easily parsed by Neo4J csv-import functions.</p>
+
+<p>An appropriate input-file has the following characteristics:</p>
+
+<ul>
+  <li>It has a header that indicates different types of entities listed in the file. There may be multiple values within a cell, as long as these are separated with an appropriate delimiter. Make sure that this delimiter is different from the one used to separate the columns of the file.</li>
+  <li>The program requires the user to select an input file (csv), as well as the symbol that is used as column delimiter in the file. The user also has the option to select a second delimiter, in case the user has put multiple values in certain columns, and wants to separate these. After importing the file the program can be configured to export a node list and edge list (see basic user instructions included in the <a href="https://github.com/WouterSpekkink/csv_parser_gephi">Github repository</a>).</li>
+</ul>
+
+<p>The purpose of this program is highly specific, but there may be things in the code that are useful for others.</p>
+
+<h3 id="downloads-1">Downloads</h3>
+
+<p>The download links for the binaries of the csv-parser can be found here:</p>
+
+<ul>
+  <li><a href="https://github.com/WouterSpekkink/csv_parser_gephi/releases/download/1.0/Csv_Parser_Linux.tar.gz">Download Linux version</a></li>
+  <li><a href="https://github.com/WouterSpekkink/csv_parser_gephi/releases/download/1.0/Csv_parser_Win.zip">Download Windows version</a></li>
+</ul>
+
+<p>See <a href="https://github.com/WouterSpekkink/csv_parser_gephi">this Github Repository</a> for the source code, and for more detailed instructions on how to use the program.</p>
+
+<h2 id="scripts-for-r">Scripts for R</h2>
+<p>I wrote several scripts for R, mostly focused on stuff related to directed a-cyclic networks or event graphs. The scripts can be found at this <a href="https://github.com/WouterSpekkink/R-Scripts">GitHub Repository</a>.</p>
+
+:ET
