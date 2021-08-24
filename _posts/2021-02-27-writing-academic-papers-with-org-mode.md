@@ -698,7 +698,7 @@ See my basic org-roam config below.
            #'org-roam-capture--get-point
            "* %?"
            :file-name "daily/%<%Y-%m-%d>"
-           :head "#+title: %<%Y-%m-%d>\n\n")))
+           :head "#+title: %<%Y-%m-%d>\n\n"))))
 {% endhighlight %}
   
 What I do here is to first point to my org-roam directory, which is a folder without any sub-folders (except for one subfolder in which I keep my 'daily' notes, which are structured more like a journal) where I keep all my notes (including the ones made with org-noter).
