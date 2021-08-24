@@ -337,7 +337,7 @@ The `\shorttitle{}` will be shown as the right header.
 
 You can also specify the author name with org-mode's own `#+AUTHOR` export option, but I found that it quickly becomes a pain to handle authors and affiliations properly when there is more than one author.
 I therefore use the LaTeX headers for this instead.
-In that case, it is necessary to include `author:nil` in `#+OPTIONS`, because emacs may default to using the username specified in your init file as the author name, even if you didn't include `#+AUTHOR` in your file. 
+In that case, it is necessary to include `author:nil` in `#+OPTIONS`, because emacs may default to using the username specified in your config file as the author name, even if you didn't include `#+AUTHOR` in your file. 
 In that case, you will always be included as a co-author, alongside any other authors that you already specified in the LaTeX headers.
 
 I also set `toc:nil` to prevent a table of contents from being included.
@@ -388,10 +388,10 @@ For tables, you can simply use org-mode's built-in table functionality, and when
 There are [various ways][24] in which you can configure the way tables come out too.
 As with figures, you'd place these export options above your table.
 
-### Setting up the LaTeX class in your init file
+### Setting up the LaTeX class in your config file
 With the information above you already know most of the basics required for writing a document in org-mode that can be exported as a pdf (via LaTeX).
 
-For the exporting via LaTeX to work properly, you'll need to set up the LaTeX classes that you plan to use, which you do in your emacs init file.
+For the exporting via LaTeX to work properly, you'll need to set up the LaTeX classes that you plan to use, which you do in your emacs config.el file.
 This is just something I shameless copied from the [example][1] that I've mentioned a few times before, and it works well for me.
 
 {% highlight lisp %}
@@ -449,7 +449,7 @@ You can place your cursor on them, press return, and you'll be shown a helm-bibt
 You'll see that you can do a number of things related to this citation, such as opening the pdf to re-read something if you need to.
 You can also access your notes on this paper from here (see more on that further below), you can add pre- or post-text, and a number of other things. 
 
-For org-ref and helm-bibtex to work properly, you'll need to put some things in your emacs init file. 
+For org-ref and helm-bibtex to work properly, you'll need to put some things in your emacs config.el file. 
 See my configuration below (and notice the comments):
 
 {% highlight lisp %}
