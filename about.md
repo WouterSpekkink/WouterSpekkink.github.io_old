@@ -5,7 +5,7 @@ permalink: /about/
 order: 1
 ---
 
-![Me](/assets/images/Me.png){:class="img-responsive" width="500"}
+![Me](/assets/images/Me.jpg){:class="img-responsive" width="500"}
 
 I am currently an Assistant Professor at the Department of Public Administration and Sociology of the Erasmus University Rotterdam. 
 
