@@ -5,6 +5,15 @@ date: 2021-02-27 15:43 +0000
 categories: Academia Writing Tool Doom-emacs
 tags: Academia Writing Tools Doom-emacs
 ---
+## EDIT (2023-01-03)
+I have recently migrated from Doom emacs to a vanilla emacs config. 
+What I like about the vanilla config is that I am more in control of what it does.
+Doom emacs, in some respects, was a bit of a black box to me. 
+Also, Doom emacs does a lot of things I do not actually need or want.
+In my original post, I linked to my [dot files][36], which included my doom emacs config.
+The doom config files are still there, but not in the `old_doom_config` branch, instead of the `master` branch. 
+My vanilla config maintains (I think) all of what I describe in my post.
+However, the config looks different in most places, for example because I could no longer make use of the Doom emacs macros.
 
 ## EDIT (2021-08-10)
 After upgrading my Doom emacs installation today, I noticed that org-roam-bibtex was broken. 
